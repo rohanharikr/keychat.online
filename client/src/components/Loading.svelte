@@ -1,1 +1,0 @@
-<progress class="progress is-small is-info" max="100" />
