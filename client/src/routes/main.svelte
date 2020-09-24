@@ -11,8 +11,9 @@
 	import { fade, fly } from 'svelte/transition';
 	import { scale } from 'svelte/transition';
 	import { quintOut } from 'svelte/easing';
+	import copy from 'copy-to-clipboard';
 
-	let socket,
+ 	let socket,
 		secretKey,
 		isChatBox = false,
 		joinKey,
@@ -20,88 +21,122 @@
 		chatmessage,
 		notification = false,
 		messages = [],
-		outgoing = [],
-		incoming = []
+		notificationMessage,
+		isCopied,
+		isChatLocked = false;
 
 	if (!socket) {
 	    socket = io(':3001')
-	    socket.on('botMessage', msg =>{
-	    	showUserJoinedNotification(msg);
+	    socket.on('botMessage', status =>{
+	    	let botMessage;
+	    	if(status === 1){
+	    		botMessage = 'has joined the chat';
+	    		isChatLocked = true
+	    	} else{
+	    		botMessage = 'has left the chat';
+	    		isChatLocked = false
+	    	}
+	    	showNotification(botMessage);
 	    });
 	    socket.on('sendMessage', msg =>{
-	    	incoming = [...incoming, {inc: 'inc', msg}]
+	    	messages = [...messages, {way: 'inc', msg}]
 	    });
 	}
 
-	function showUserJoinedNotification(userName){
+	function showNotification(msg){
 		notification = true;
-		setTimeout(() => notification = false, 2000);
+		notificationMessage = msg;
+		setTimeout(() => notification = false, 1250);
 	}
 
 	function startSession(){
 		secretKey = secretKeyGenerator();
 		socket.emit('secretRoom', secretKey);
 		isChatBox = true;
-		joinedSession = true;
 	}
 
 	function joinSession(){
 		socket.emit('secretRoom', joinKey);
 		isChatBox = true;
+		joinedSession = true;
+	}
+	let inputRef;
+	function sendMessage(){
+		messages = [...messages, {way: 'out', msg: chatmessage}]
+		socket.emit('message', chatmessage);
+		chatmessage = '';
+		inputRef.focus()
 	}
 
-	function sendMessage(){
-		outgoing = [...outgoing, {inc: 'inc', msg: chatmessage}]
-		if(!joinedSession){
-			socket.emit('message', {user: 0, message: chatmessage});
-		} else{
-			socket.emit('message', {user: 1, message: chatmessage});
-		}
-		chatmessage = ''
+	function copySecretKey(){
+		isCopied = !isCopied;
+		if (secretKey){
+			copy(secretKey)
+		} else {
+			copy(joinKey)
+		} 
+		showNotification("Secret Key copied to clipboard")
+		setTimeout(() => isCopied = false, 1250);
 	}
+
+	// function updateScroll() {
+	// 	const chatWindow = document.getElementById('chatWindow');
+ //  		setTimeout(() => {
+ //    		chatWindow.scrollTop = chatWindow.scrollHeight; 
+ //  		}, 0);
+	// }
 </script>
 
 <Header />
-	<main>
-		<div class="enterSessionCard">
-			{#if !isChatBox}
-				<input placeholder="*****" maxlength="5" out:fly="{{ y: 200, duration: 200 }}" bind:value={joinKey}>
-				<button on:click={joinSession} out:fly="{{ y: 200, duration: 200 }}">Enter with secret code</button>
-			{:else}
-				<div class="chatBox" transition:slide|local>
-					<div class="sessionInfo flex">
-						<div class="secretKey">{secretKey || joinKey}</div>
-						<ul>
-							<li><div class="status"></div>Chat Locked</li>
-							<li><div class="status"></div>Network</li>
-						</ul>
-					</div>
-					<div class="chatArea">
-						{#if notification}
-							<div class="notification" in:fly="{{y: -20, duration: 200}}" out:fly="{{ y: -20, duration: 200 }}">anon.dingo has joined the chat</div>
-						{/if}
-						{#each outgoing as out}
-								<div class="chatBubbleBlue" in:fly="{{y: 10, duration: 300}}">{out}</div>
-						{/each}
-						{#each incoming as {message}}
-								<div class="chatBubbleGrey">{message}</div>
-						{/each}
-						<!-- <div class="chatBubbleGrey">Hey, whats up bro?</div> -->
-					</div>
-					<div class="messageBoxContainer flex">
-						<input class="messageBox" bind:value={chatmessage} placeholder="type your message here" />
-						<button on:click={sendMessage}><img src="send.png" alt="send icon" class="sendIcon">Send</button>
-					</div>
-				</div>
-			{/if}
-		</div>
+<main>
+	<div class="enterSessionCard">
 		{#if !isChatBox}
-			<button class="newSession" on:click={startSession}>Start a new chat</button>
+			<input placeholder="*****" maxlength="5" out:fly="{{ y: 200, duration: 200 }}" bind:value={joinKey}>
+			<button on:click={joinSession} out:fly="{{ y: 200, duration: 200 }}">Enter with secret code</button>
 		{:else}
-			<p class="warning" in:fade>Please do not share any personal information as there is no proper way to know who is on the other side and at the same time, keep the channel anonymous.</p>
+			<div class="chatBox" transition:slide|local>
+				<div class="sessionInfo flex">
+					<div class="secretKey">
+						<img src="secretkey.svg" alt="secret key" class="secretKeyIcon">
+						<div>{secretKey || joinKey}</div>
+						<img src={isCopied ? "copied.svg" : "copy.svg"} alt="copied icon" class="copyIcon" on:click={copySecretKey}>
+					</div>
+					<ul>
+						<li>
+							<div class={isChatLocked ? 'status' : joinedSession ? 'status' : 'status red'}></div>
+							Chat {isChatLocked ? 'Locked' : joinedSession ? 'Locked' : 'Open'}
+						</li>
+						<li><div class="status"></div>Network</li>
+					</ul>
+				</div>
+				<div class="chatArea">
+					{#if notification}
+						<div class="notification" in:fly="{{y: -20, duration: 200}}" out:fly="{{ y: -20, duration: 200 }}">
+							{notificationMessage}
+						</div>
+					{/if}
+					{#each messages as {way, msg}}
+						{#if way === 'out'}
+							<div class="chatBubbleBlue" in:fly="{{y: 10, duration: 300}}">{msg}</div>
+						{:else}
+							<div class="chatBubbleGrey" in:fly="{{y: 10, duration: 300}}">{msg}</div>
+						{/if}
+					{/each}
+					<!-- <div class="chatBubbleGrey">Hey, whats up bro?</div> -->
+				</div>
+				<div class="messageBoxContainer flex">
+					<input class="messageBox" bind:value={chatmessage} placeholder="type your message here" bind:this={inputRef} autofocus/>
+					<button on:click={sendMessage}><img src="send.png" alt="send icon" class="sendIcon">Send</button>
+				</div>
+			</div>
 		{/if}
-	</main>
-
+	</div>
+	{#if !isChatBox}
+		<button class="newSession" on:click={startSession}>Start a new chat</button>
+	{:else}
+		<p class="warning" in:fade>Please do not share any personal information as there is no proper way to know who is on the other side and at the same time, keep the channel anonymous.</p>
+	{/if}
+</main>
 <Features features={$featuresData} />
 <Hightlight />
 <Working steps={$working} />
@@ -178,9 +213,13 @@
 
 	.secretKey{
 		background: #181818;
-		padding: 0.8rem;
+		height: 2.8rem;
+		padding: 0 0.4rem;
 		display: inline-block;
 		border-radius: 0.2rem;
+		font-weight: 200;
+		display: flex;
+		align-items: center;
 	}
 
 	.sessionInfo ul{
@@ -238,5 +277,22 @@
 	    right: 0;
 	    text-align: center;
 	    margin: 0 4rem;
+	}
+
+	.copyIcon{
+		height: 2rem;
+	}
+
+	.secretKey div{
+		margin: 0 1rem;
+	}
+
+	.secretKeyIcon {
+		height: 1rem;
+		margin-right: -0.5rem;
+	}
+
+	.red{
+		background: #F91C1C;
 	}
 </style>

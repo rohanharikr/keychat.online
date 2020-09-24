@@ -13,7 +13,6 @@ io.on('connection', socket => {
                 'botMessage', 'someone has joined the chat');
     });
     socket.on('message', message => {
-        console.log(message)
         // io.to(secretRoom).emit('sendMessage', message);
         socket.broadcast.to(secretRoom).emit('sendMessage', message);
     });
