@@ -75,7 +75,10 @@ button {
     font-size: 1rem;
     font-weight: 300;
     cursor: pointer;
-    transition: 0.5s;
+    transition: 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 button:hover {

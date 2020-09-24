@@ -16,51 +16,76 @@
  	let socket,
 		secretKey,
 		isChatBox = false,
-		joinKey,
+		joinKey = '',
+		//set to true when clicked on "join a session"
 		joinedSession = false,
 		chatmessage,
+		// to control visibility of the notification, has a timeout
+		// attached in the function to set to false
 		notification = false,
 		messages = [],
 		notificationMessage,
 		isCopied,
-		isChatLocked = false;
+		isChatLocked = false,
+		inputRef,
+		sessionInProgress = false,
+		isLoading = false
 
-	if (!socket) {
-	    socket = io(':3001')
-	    socket.on('botMessage', status =>{
-	    	let botMessage;
-	    	if(status === 1){
-	    		botMessage = 'has joined the chat';
-	    		isChatLocked = true
-	    	} else{
-	    		botMessage = 'has left the chat';
-	    		isChatLocked = false
-	    	}
-	    	showNotification(botMessage);
-	    });
-	    socket.on('sendMessage', msg =>{
-	    	messages = [...messages, {way: 'inc', msg}]
-	    });
-	}
+	//connect to socket.io server
+	if(!socket){
+    socket = io(':3001')
+
+    //listen for notification message
+    socket.on('botMessage', status => {
+    	let botMessage;
+    	//status 1 = joined, 0 = disconnected
+    	if(status === 1){
+    		botMessage = 'has joined the chat';
+    		isChatLocked = true
+    	} else{
+    		botMessage = 'has left the chat';
+    		isChatLocked = false
+    	}
+    	showNotification(botMessage);
+    });
+    }
+
+    //sends a message to server
+    socket.on('sendMessage', msg =>{
+    	messages = [...messages, {way: 'inc', msg}]
+    });
 
 	function showNotification(msg){
 		notification = true;
 		notificationMessage = msg;
-		setTimeout(() => notification = false, 1250);
+		setTimeout(() => notification = false, 2000);
 	}
 
 	function startSession(){
 		secretKey = secretKeyGenerator();
-		socket.emit('secretRoom', secretKey);
+		socket.emit('newRoom', secretKey);
 		isChatBox = true;
 	}
 
 	function joinSession(){
-		socket.emit('secretRoom', joinKey);
-		isChatBox = true;
-		joinedSession = true;
+		isLoading = true;
+		socket.emit('joinRoom', joinKey)
+		socket.on('sessionLocked', () => {
+			sessionInProgress = true;
+		});	
+
+		// this is a bady way to write this, need to use promise
+		setTimeout(() => { 
+			 if(!sessionInProgress){
+				isChatBox = true;
+				joinedSession = true;
+			} else{
+				isLoading = false;
+				showNotification('Session does not exist');
+			}
+		}, 1500)
 	}
-	let inputRef;
+
 	function sendMessage(){
 		messages = [...messages, {way: 'out', msg: chatmessage}]
 		socket.emit('message', chatmessage);
@@ -79,6 +104,18 @@
 		setTimeout(() => isCopied = false, 1250);
 	}
 
+	function checkEnterPress(event){
+		let key;
+		let keyCode;
+		key = event.key;
+		keyCode = event.keyCode;
+		if (keyCode === 13 && chatmessage){
+			sendMessage();
+		} else if(keyCode === 13 && joinKey){
+			startSession()
+		}
+	}
+
 	// function updateScroll() {
 	// 	const chatWindow = document.getElementById('chatWindow');
  //  		setTimeout(() => {
@@ -91,8 +128,19 @@
 <main>
 	<div class="enterSessionCard">
 		{#if !isChatBox}
-			<input placeholder="*****" maxlength="5" out:fly="{{ y: 200, duration: 200 }}" bind:value={joinKey}>
-			<button on:click={joinSession} out:fly="{{ y: 200, duration: 200 }}">Enter with secret code</button>
+			<input placeholder="*****" maxlength="5" out:fly="{{ y: 200, duration: 200 }}" bind:value={joinKey} on:keydown={checkEnterPress}>
+			{#if notification}
+				<div transition:slide class="error">
+					{notificationMessage}
+				</div>
+			{/if}
+			<button on:click={joinSession} out:fly="{{ y: 200, duration: 200 }}" style="background: #1f1e22" disabled={isLoading} class:focus={joinKey.length}>
+				{#if !isLoading}
+					Enter with secret code
+				{:else}
+					<img src="loader.gif" alt="loading gif" class="loaderAnim">
+				{/if}
+			</button>
 		{:else}
 			<div class="chatBox" transition:slide|local>
 				<div class="sessionInfo flex">
@@ -125,7 +173,7 @@
 					<!-- <div class="chatBubbleGrey">Hey, whats up bro?</div> -->
 				</div>
 				<div class="messageBoxContainer flex">
-					<input class="messageBox" bind:value={chatmessage} placeholder="type your message here" bind:this={inputRef} autofocus/>
+					<input class="messageBox" bind:value={chatmessage} placeholder="type your message here" bind:this={inputRef}  on:keydown={checkEnterPress} autofocus/>
 					<button on:click={sendMessage}><img src="send.png" alt="send icon" class="sendIcon">Send</button>
 				</div>
 			</div>
@@ -167,6 +215,14 @@
 
 	.chatBox{
 		height: auto;
+	}
+
+	.blur{
+		background: #1f1e22;
+	}
+
+	.focus{
+		background: #6976f7 !important;
 	}
 
 	.warning{
@@ -279,8 +335,20 @@
 	    margin: 0 4rem;
 	}
 
+	.loaderAnim{
+		height: 2.4rem;
+	}
+
 	.copyIcon{
 		height: 2rem;
+	}
+
+	.error{
+		text-align: center;
+		margin-bottom: 1rem;
+		font-weight: 200;
+		font-size: 1rem;
+		color: red;
 	}
 
 	.secretKey div{
