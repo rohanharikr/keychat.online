@@ -42,6 +42,14 @@ io.on('connection', socket => {
         socket.broadcast.to(secretRoom).emit('sendMessage', message);
     });
 
+    socket.on('typingMessage', () => {
+        socket.broadcast.to(secretRoom).emit('typing');
+    });
+
+    socket.on('noLongerTypingMessage', () => {
+        socket.broadcast.to(secretRoom).emit('noLongerTyping');
+    })
+
     //fired when a user disconnects
     socket.on('disconnect', () => {
         socket.broadcast

@@ -34,7 +34,8 @@
 		sessionInProgress = false,
 		isLoading = false,
 		user = new AnimalAvatar(),
-		anon = new AnimalAvatar();
+		anon = new AnimalAvatar(),
+		isTyping = false;
 
 	let userName,
 	 	userAvatar,
@@ -62,13 +63,10 @@
 
     //listening on incoming messages and pushes to array
 	socket.on('userData', data => {
-		// anonName = data.anonName;
-		// anonAvatar = data.anonAvatar;
 		anonName = data.anonName;
 		anonAvatar = data.anonAvatar;
 		userName = data.userName;
 		userAvatar = data.userAvatar;
-		console.log(data)
 	})
 
     socket.on('sendMessage', msg =>{
@@ -80,6 +78,14 @@
 		notificationMessage = msg;
 		setTimeout(() => notification = false, 2000);
 	}
+
+	socket.on('typing', () => {
+		isTyping = true;
+	});
+
+	socket.on('noLongerTyping', () => {
+		isTyping = false;
+	});
 
 	function startSession(){
 		userName = user.getAvatarName(),
@@ -130,16 +136,35 @@
 		setTimeout(() => isCopied = false, 1250);
 	}
 
+	//local vars
+	let typing = false, 
+		timeout = undefined;
+
+	function timeoutFunction(){
+		typing = false;
+		socket.emit('noLongerTypingMessage');
+	}
+
 	function checkEnterPress(event){
 		let key;
 		let keyCode;
 		key = event.key;
 		keyCode = event.keyCode;
+
 		if (keyCode === 13 && chatmessage){
 			sendMessage();
 		} else if(keyCode === 13 && joinKey){
 			startSession()
 		}
+
+		if(typing == false && chatmessage) {
+	    	typing = true;
+	    	socket.emit('typingMessage');
+	    	timeout = setTimeout(timeoutFunction, 1000);
+	  	} else {
+	    	clearTimeout(timeout);
+	    	timeout = setTimeout(timeoutFunction, 800);
+	  	}
 	}
 
 	// function updateScroll() {
@@ -174,7 +199,7 @@
 			<div class="chatBox" transition:slide>
 				<div class="sessionInfo flex" in:fade={{duration: 500}}>
 					<div class="secretKey">
-						<img src="secretkey.svg" alt="secret key" class="secretKeyIcon">
+						<!-- <img src="secretkey.svg" alt="secret key" class="secretKeyIcon"> -->
 						<div>{secretKey || joinKey}</div>
 						<img src={isCopied ? "copied.svg" : "copy.svg"} alt="copied icon" class="copyIcon" on:click={copySecretKey}>
 					</div>
@@ -210,12 +235,16 @@
 								{:else}
 									<div class="avatar avatarAnon" style="background-image: url({userAvatar})"></div>
 								{/if}
-								<div class="chatBubbleGrey" in:fly="{{y: 10, duration: 300}}">{msg}</div>
+								<div class="chatBubbleGrey">{msg}</div>
 							</div>
 							<div class="timeStamp timeStampAnon" in:fly="{{y: 10, duration: 300}}">{time}</div>
 						{/if}
 					{/each}
-					<!-- <div class="chatBubbleGrey">Hey, whats up bro?</div> -->
+					{#if isTyping}
+						<div class="chatBubbleContainer" in:fly="{{y: 10, duration: 300}}" out:fly="{{y: 10, duration: 100}}">
+							<div class="chatBubbleGrey typingAnimContainer"><img src="typing.gif" alt="typing anim" class="typingAnim"></div>
+						</div>
+					{/if}
 				</div>
 				<div class="messageBoxContainer flex" in:fade={{duration: 500}}>
 					<input class="messageBox" bind:value={chatmessage} placeholder="type your message here" bind:this={inputRef}  on:keydown={checkEnterPress} autofocus/>
@@ -254,6 +283,19 @@
 		align-items: inherit;
 	}
 
+	.typingAnimContainer{
+		padding: 0;
+		height: 2.2rem;
+		width: 3.8rem;
+		display: flex !important;
+		justify-content: center !important;
+		align-items: center !important;
+	}
+
+	.typingAnim{
+		height: 1.6rem;
+	}
+
 	.enterSessionCard{
 		padding: 1.2rem;
 		height: auto;
@@ -273,10 +315,15 @@
 		height: auto;
 	}
 
-/*	.blur{
-		background: #1f1e22;
+	.alias{
+		font-size: 0.6rem;
+		opacity: 0.5;
+		margin: -0.2rem 0;
+    	margin-bottom: -0.2rem;
+		margin-bottom: 0.1rem;
+		text-align: right;
 	}
-*/
+
 	.focus{
 		background: #6976f7 !important;
 	}
