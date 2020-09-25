@@ -6,7 +6,7 @@
 	import Footer from '../components/Footer.svelte';
 	import { featuresData, working} from '../stores.js';
 	import io from 'socket.io-client';
-	import secretKeyGenerator from '../utils/secretKeyGenerator'
+	import secretKeyGenerator from '../utils/secretKeyGenerator';
 	import { slide } from 'svelte/transition';
 	import { fade, fly } from 'svelte/transition';
 	import { scale } from 'svelte/transition';
@@ -15,16 +15,15 @@
 	import AnimalAvatar from 'animal-avatars.js';
 	import { onMount } from 'svelte';
 	import getTime from '../utils/getTime';
+	import isOnline from 'is-online';
+	// import showNotification from '../utils/notification';
 
  	let socket,
 		secretKey,
 		isChatBox = false,
 		joinKey = '',
-		//set to true when clicked on "join a session"
 		joinedSession = false,
 		chatmessage,
-		// to control visibility of the notification, has a timeout
-		// attached in the function to set to false
 		notification = false,
 		messages = [],
 		notificationMessage,
@@ -36,12 +35,23 @@
 		user = new AnimalAvatar(),
 		anon = new AnimalAvatar(),
 		isTyping = false,
+		network = true,
 		chatArea;
 
 	let userName,
 	 	userAvatar,
 	 	anonName,
 	 	anonAvatar;
+
+ 	setInterval(async() => {
+		network = await isOnline();
+	}, 1000);
+
+ 	$: if(!network && isChatBox){
+		showNotification('You are offline', 'red');
+ 	} else if (network && isChatBox && messages.length){
+ 		showNotification('You are back online', 'green');
+ 	}
 
 	//connect to socket.io server
 	if(!socket){
@@ -53,12 +63,13 @@
 	    	//status 1 = joined, 0 = disconnected
 	    	if(status === 1){
 	    		botMessage = `${userName} has joined the chat`;
-	    		isChatLocked = true
+	    		isChatLocked = true;
+	    		showNotification(botMessage, 'green');
 	    	} else{
 	    		botMessage = `${userName} has left the chat`;
 	    		isChatLocked = false
+	    		showNotification(botMessage, 'red');
 	    	}
-	    	showNotification(botMessage);
 	    });
     }
 
@@ -75,10 +86,10 @@
     	updateScroll();
     });
 
-	function showNotification(msg){
+	function showNotification(msg, color){
 		notification = true;
-		notificationMessage = msg;
-		setTimeout(() => notification = false, 2000);
+		notificationMessage = {msg, color};
+		setTimeout(() => notification = false, 3000);
 	}
 
 	socket.on('typing', () => {
@@ -113,7 +124,7 @@
 				joinedSession = true;
 			} else{
 				isLoading = false;
-				showNotification('Session does not exist');
+				showNotification('Session does not exist', 'red');
 			}
 		}, 1500)
 	}
@@ -135,7 +146,7 @@
 		} else {
 			copy(joinKey)
 		} 
-		showNotification("Secret Key copied to clipboard")
+		showNotification("Secret Key copied to clipboard", 'green')
 		setTimeout(() => isCopied = false, 1250);
 	}
 
@@ -183,8 +194,8 @@
 		{#if !isChatBox}
 			<input placeholder="*****" maxlength="5" bind:value={joinKey} on:keydown={checkEnterPress}>
 			{#if notification}
-				<div transition:slide class="error">
-					{notificationMessage}
+				<div transition:slide class="error" class:red={notificationMessage.color === 'red'}>
+					{notificationMessage.msg}
 				</div>
 			{/if}
 			<button on:click={joinSession} style="background: #1f1e22" disabled={isLoading} class:focus={joinKey.length}>
@@ -210,13 +221,13 @@
 							<div class={isChatLocked ? 'status' : joinedSession ? 'status' : 'status red'}></div>
 							Chat {isChatLocked ? 'Locked' : joinedSession ? 'Locked' : 'Open'}
 						</li>
-						<li><div class="status"></div>Network</li>
+						<li><div class="status" class:red={!network}></div>Network</li>
 					</ul>
 				</div>
 				<div class="chatArea" in:fade={{duration: 500}} bind:this={chatArea}>
 					{#if notification}
-						<div class="notification" in:fly="{{y: -20, duration: 200}}" out:fly="{{ y: -20, duration: 200 }}">
-							{notificationMessage}
+						<div class="notification" in:fly="{{y: -20, duration: 200}}" out:fly="{{ y: -20, duration: 200 }}" class:red={notificationMessage.color === 'red'}>
+							{notificationMessage.msg}
 						</div>
 					{/if}
 					{#each messages as {way, msg, time}}
@@ -249,7 +260,7 @@
 					{/if}
 				</div>
 				<div class="messageBoxContainer flex" in:fade={{duration: 500}}>
-					<input class="messageBox" bind:value={chatmessage} placeholder="type your message here" bind:this={inputRef}  on:keydown={checkEnterPress} autofocus/>
+					<input class="messageBox" bind:value={chatmessage} placeholder="type your message here" bind:this={inputRef}  on:keydown={checkEnterPress}/>
 					<button on:click={sendMessage}><img src="send.png" alt="send icon" class="sendIcon">Send</button>
 				</div>
 			</div>
@@ -317,14 +328,14 @@
 		height: auto;
 	}
 
-	.alias{
+/*	.alias{
 		font-size: 0.6rem;
 		opacity: 0.5;
 		margin: -0.2rem 0;
     	margin-bottom: -0.2rem;
 		margin-bottom: 0.1rem;
 		text-align: right;
-	}
+	}*/
 
 	.focus{
 		background: #6976f7 !important;
@@ -496,12 +507,13 @@
 		margin: 0 1rem;
 	}
 
-	.secretKeyIcon {
+/*	.secretKeyIcon {
 		height: 1rem;
 		margin-right: -0.5rem;
-	}
+	}*/
 
 	.red{
 		background: #F91C1C;
+		color: white !important;
 	}
 </style>
