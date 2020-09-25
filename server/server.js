@@ -2,6 +2,8 @@ const app = require('express')();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 
+require('dotenv').config({ path: '.env' })
+
 let userName, userAvatar, anonName, anonAvatar;
 
 io.on('connection', socket => {
@@ -60,6 +62,8 @@ io.on('connection', socket => {
     });
 });
 
-http.listen(3001, () => {
-    console.log('listening on 3001');
+const port = process.env.PORT
+
+http.listen(port, () => {
+    console.log(`listening on ${port}`);
 });
