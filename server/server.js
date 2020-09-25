@@ -2,13 +2,15 @@ const app = require('express')();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 
+let userName, userAvatar, anonName, anonAvatar;
+
 io.on('connection', socket => {
     let secretRoom;
     socket.on('joinRoom', joinKey => {
-        if (io.sockets.adapter.rooms[joinKey] && io.sockets.adapter.rooms[joinKey].length <= 1) {
+        if (io.sockets.adapter.rooms[joinKey] && io.sockets.adapter.rooms[joinKey].length === 1) {
             secretRoom = joinKey;
             socket.join(secretRoom);
-
+            io.in(secretRoom).emit('userData', { userName, userAvatar, anonName, anonAvatar });
             socket.broadcast
                 .to(secretRoom)
                 .emit(
@@ -19,8 +21,12 @@ io.on('connection', socket => {
         }
     });
 
-    socket.on('newRoom', secretKey => {
-        secretRoom = secretKey;
+    socket.on('newRoom', data => {
+        userName = data.userName;
+        userAvatar = data.userAvatar;
+        anonName = data.anonName;
+        anonAvatar = data.anonAvatar;
+        secretRoom = data.secretKey;
         socket.join(secretRoom);
         //get total numbers os clients in a room
         // const room = io.sockets.adapter.rooms[secretRoom].length;
