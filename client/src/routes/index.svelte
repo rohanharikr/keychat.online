@@ -14,7 +14,7 @@
 	import copy from 'copy-to-clipboard';
 	import AnimalAvatar from 'animal-avatars.js';
 	import { onMount } from 'svelte';
-	import getTime from '../utils/getTime'
+	import getTime from '../utils/getTime';
 
  	let socket,
 		secretKey,
@@ -35,7 +35,8 @@
 		isLoading = false,
 		user = new AnimalAvatar(),
 		anon = new AnimalAvatar(),
-		isTyping = false;
+		isTyping = false,
+		chatArea;
 
 	let userName,
 	 	userAvatar,
@@ -71,6 +72,7 @@
 
     socket.on('sendMessage', msg =>{
     	messages = [...messages, msg]
+    	updateScroll();
     });
 
 	function showNotification(msg){
@@ -123,6 +125,7 @@
 		socket.emit('message', {way: 'in', msg: chatmessage, time: getTime()});
 		chatmessage = '';
 		inputRef.focus()
+		updateScroll();
 	}
 
 	function copySecretKey(){
@@ -167,12 +170,11 @@
 	  	}
 	}
 
-	// function updateScroll() {
-	// 	const chatWindow = document.getElementById('chatWindow');
- //  		setTimeout(() => {
- //    		chatWindow.scrollTop = chatWindow.scrollHeight; 
- //  		}, 0);
-	// }
+	function updateScroll() {
+		setTimeout(() => {
+    		chatArea.scrollTop = chatArea.scrollHeight;   
+  		}, 0);
+	}
 </script>
 <div class="main-container">
 <Header />
@@ -211,7 +213,7 @@
 						<li><div class="status"></div>Network</li>
 					</ul>
 				</div>
-				<div class="chatArea" in:fade={{duration: 500}}>
+				<div class="chatArea" in:fade={{duration: 500}} bind:this={chatArea}>
 					{#if notification}
 						<div class="notification" in:fly="{{y: -20, duration: 200}}" out:fly="{{ y: -20, duration: 200 }}">
 							{notificationMessage}
@@ -403,7 +405,7 @@
 		position: relative;
 		padding: 1rem;
 		text-align: center;
-		/*overflow-y: scroll;*/
+		overflow-y: scroll;
 	}
 
 	.secretKey{
