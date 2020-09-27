@@ -2,10 +2,10 @@ const app = require('express')();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 
-let userName, userAvatar, anonName, anonAvatar;
+let userName, userAvatar, anonName, anonAvatar, encKey;
 
 io.on('connection', socket => {
-    let secretRoom, encKey;
+    let secretRoom;
     socket.on('joinRoom', joinKey => {
         if (io.sockets.adapter.rooms[joinKey] && io.sockets.adapter.rooms[joinKey].length === 1) {
             secretRoom = joinKey;

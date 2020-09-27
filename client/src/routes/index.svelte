@@ -31,22 +31,28 @@
 		isChatLocked = false,
 		inputRef,
 		sessionInProgress = false,
-		isLoading = false,
+		isLoadingJoin = false,
+		isLoadingStart = false,
 		user = new AnimalAvatar(),
 		anon = new AnimalAvatar(),
 		isTyping = false,
 		network = true,
 		chatArea,
-		encKey;
+		encKey,
+		chatOptions = false;
 
 	let userName,
 	 	userAvatar,
 	 	anonName,
 	 	anonAvatar;
 
- // 	setInterval(async() => {
-	// 	network = await isOnline();
-	// }, 1000);
+
+	 $: chatOptions = true ? chatmessage === "/" : false;
+
+
+ 	setInterval(async() => {
+		network = await isOnline();
+	}, 1000);
 
  	// $: if(!network && isChatBox){
 		// showNotification('You are offline', 'red');
@@ -85,7 +91,6 @@
 
     socket.on('sendMessage', msg =>{
     	const decryptedMessage = AES.decrypt(msg, encKey);
-    	console.log(decryptedMessage);
     	messages = [...messages, decryptedMessage];
     	updateScroll();
     });
@@ -93,7 +98,7 @@
 	function showNotification(msg, color){
 		notification = true;
 		notificationMessage = {msg, color};
-		setTimeout(() => notification = false, 3000);
+		setTimeout(() => notification = false, 2000);
 	}
 
 	socket.on('typing', () => {
@@ -105,30 +110,34 @@
 	});
 
 	function startSession(){
+		secretKey = secretKeyGenerator();
 		encKey = secretKey + secretKeyGenerator();
 		userName = user.getAvatarName(),
 	 	userAvatar = user.getAvatarUrl(),
 		anonName = anon.getAvatarName(),
 	 	anonAvatar = anon.getAvatarUrl(),
-		secretKey = secretKeyGenerator();
 		socket.emit('newRoom', {secretKey, userName, userAvatar, anonName, anonAvatar, encKey});
-		isChatBox = true;
+		isLoadingStart = true;
+		setTimeout(() => {
+			isLoadingStart = false;
+			isChatBox = true
+		}, 300) //ux
 	}
 
 	function joinSession(){
-		isLoading = true;
+		isLoadingJoin = true;
 		socket.emit('joinRoom', joinKey)
 		socket.on('sessionLocked', () => {
 			sessionInProgress = true;
 		});	
 
-		// this is a bady way to write this, need to use promise
+		// this is a bad way to write this, need to use promise
 		setTimeout(() => { 
 			 if(!sessionInProgress){
 				isChatBox = true;
 				joinedSession = true;
 			} else{
-				isLoading = false;
+				isLoadingJoin = false;
 				showNotification('Session does not exist', 'red');
 			}
 		}, 1500)
@@ -170,19 +179,23 @@
 		key = event.key;
 		keyCode = event.keyCode;
 
-		if (keyCode === 13 && chatmessage.length){
-			sendMessage();
-		} else if(keyCode === 13 && joinKey){
+		if(keyCode === 13 && !isChatBox && !joinKey.length && !chatmessage.length){
+			startSession();
+		} else if(keyCode === 13 && joinKey.length && !isChatBox && !chatmessage.length){
 			joinSession();
 		}
 
-		if(typing == false && chatmessage) {
+		if(keyCode === 13 && chatmessage.length && isChatBox){
+			sendMessage();
+		}
+		
+		if(typing === false && chatmessage) {
 	    	typing = true;
 	    	socket.emit('typingMessage');
-	    	timeout = setTimeout(timeoutFunction, 1000);
-	  	} else {
+	    	timeout = setTimeout(timeoutFunction, 200);
+	  	} else if(typing === true && chatmessage){
 	    	clearTimeout(timeout);
-	    	timeout = setTimeout(timeoutFunction, 800);
+	    	timeout = setTimeout(timeoutFunction, 200);
 	  	}
 	}
 
@@ -192,19 +205,22 @@
   		}, 0);
 	}
 </script>
+
+<!-- causing a lot of bugs, will fix -->
+<!-- <svelte:window on:keydown={checkEnterPress}/> -->
 <div class="main-container">
-<Header />
+<Header src={isChatBox ? "chatsecureonline.svg" : "chatsecureoffline.svg"} />
 <main>
 	<div class="enterSessionCard">
 		{#if !isChatBox}
-			<input placeholder="*****" maxlength="5" bind:value={joinKey} on:keydown={checkEnterPress}>
+			<input placeholder="*****" minlength="5" maxlength="5" bind:value={joinKey} on:keydown={checkEnterPress}>
 			{#if notification}
 				<div transition:slide class="error" class:redtext={notificationMessage.color === 'red'}>
 					{notificationMessage.msg}
 				</div>
 			{/if}
 			<button on:click={joinSession} style="background: #1f1e22" disabled={!joinKey.length} class:focus={joinKey.length}>
-				{#if !isLoading}
+				{#if !isLoadingJoin}
 					Enter with secret code
 				{:else}
 					<img src="loader.gif" alt="loading gif" class="loaderAnim">
@@ -218,15 +234,15 @@
 				<div class="sessionInfo flex" in:fade={{duration: 500}}>
 					<div class="secretKey">
 						<!-- <img src="secretkey.svg" alt="secret key" class="secretKeyIcon"> -->
-						<div>{secretKey || joinKey}</div>
+						<div data-tooltip="Share this secret code with anyone to start chating">{secretKey || joinKey}</div>
 						<img src={isCopied ? "copied.svg" : "copy.svg"} alt="copied icon" class="copyIcon" on:click={copySecretKey}>
 					</div>
 					<ul>
-						<li>
+						<li data-tooltip="Locked once another user enters the chat" style="cursor: pointer;">
 							<div class={isChatLocked ? 'status' : joinedSession ? 'status' : 'status red'}></div>
 							Chat {isChatLocked ? 'Locked' : joinedSession ? 'Locked' : 'Open'}
 						</li>
-						<li><div class="status" class:red={!network}></div>Network</li>
+						<li data-tooltip="Indicates if you are online or not" style="cursor: pointer;"><div class="status" class:red={!network}></div>Network</li>
 					</ul>
 				</div>
 				<div class="chatArea" in:fade={{duration: 500}} bind:this={chatArea}>
@@ -237,21 +253,21 @@
 					{/if}
 					{#each messages as {way, msg, time}}
 						{#if way === 'out'}
-							<div class="chatBubbleContainer" style="margin-right: -0.4rem" in:fly="{{y: 10, duration: 300}}">
+							<div class="chatBubbleContainer" in:fly="{{y: 10, duration: 300}}">
 								<div class="chatBubbleBlue">{msg}</div>
 								{#if !joinedSession}
-									<div class="avatar avatarUser" style="background-image: url({userAvatar})"></div>
+									<div class="avatar avatarUser tooltip-bottom" style="background-image: url({userAvatar})" data-tooltip="your mom"></div>
 								{:else}
-									<div class="avatar avatarUser" style="background-image: url({anonAvatar})"></div>
+									<div class="avatar avatarUser tooltip-bottom" style="background-image: url({anonAvatar})" data-tooltip="your dad"></div>
 								{/if}
 							</div>
 							<div class="timeStamp timeStampUser" in:fly="{{y: 10, duration: 300}}">{time}</div>
 						{:else}
 							<div class="chatBubbleContainer" in:fly="{{y: 10, duration: 300}}">
 								{#if !joinedSession}
-									<div class="avatar avatarAnon" style="background-image: url({anonAvatar})"></div>
+									<div class="avatar avatarAnon tooltip-bottom" style="background-image: url({anonAvatar})" data-tooltip="your dad"></div>
 								{:else}
-									<div class="avatar avatarAnon" style="background-image: url({userAvatar})"></div>
+									<div class="avatar avatarAnon tooltip-bottom" style="background-image: url({userAvatar})" data-tooltip="your dad"></div>
 								{/if}
 								<div class="chatBubbleGrey">{msg}</div>
 							</div>
@@ -264,15 +280,28 @@
 						</div>
 					{/if}
 				</div>
+				{#if chatOptions}
+					<ul class="chatOptions" transition:slide>
+						<li><img src="close.png" alt="close icon"><div>close</div></li>
+						<li><img src="clear.png" alt="clear icon"><div>clear</div></li>
+						<li><img src="download.png" alt="download icon"><div>download</div></li>
+					</ul>
+				{/if}
 				<div class="messageBoxContainer flex" in:fade={{duration: 500}}>
 					<input class="messageBox" bind:value={chatmessage} placeholder="type your message here" bind:this={inputRef}  on:keydown={checkEnterPress}/>
-					<button on:click={sendMessage} disabled={!chatmessage.length}><img src="send.png" alt="send icon" class="sendIcon">Send</button>
+					<button on:click={sendMessage} disabled={!chatmessage.length || chatmessage==="/" }><img src="send.png" alt="send icon" class="sendIcon">Send</button>
 				</div>
 			</div>
 		{/if}
 	</div>
 	{#if !isChatBox}
-		<button class="newSession" on:click={startSession}>Start a new chat</button>
+		<button class="newSession" on:click={startSession}>
+			{#if !isLoadingStart}
+				Start a new chat
+			{:else}
+				<img src="loader.gif" alt="loading gif" class="loaderAnim">
+			{/if}
+		</button>
 	{:else}
 		<p class="warning" in:fade>Please do not share any personal information as there is no proper way to know who is on the other side and at the same time, keep the channel anonymous.</p>
 	{/if}
@@ -402,7 +431,7 @@
 
 	.messageBoxContainer button{
 		height: 2.6rem;
-		width: 6.2rem;
+		width: 28%;
 	}
 
 	.messageBox{
@@ -458,6 +487,31 @@
 		height: 0.6rem;
 		border-radius: 50%;
 		background: #04E887;
+		margin-right: 0.4rem;
+	}
+
+	.chatOptions{
+		margin-bottom: 1.4rem;
+		display: flex;
+		align-items: center;
+		border-radius: 0.2rem;
+	}
+
+	.chatOptions li{
+		list-style: none;
+		font-weight: 100;
+		font-size: 1rem;
+		background: #242424;
+		padding: 0.6rem 1rem;
+		border-radius: 0.2rem;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		margin-right: 0.8rem;
+	}
+
+	.chatOptions img{
+		height: 0.8rem;
 		margin-right: 0.4rem;
 	}
 
@@ -518,11 +572,6 @@
 		margin: 0 1rem;
 	}
 
-/*	.secretKeyIcon {
-		height: 1rem;
-		margin-right: -0.5rem;
-	}*/
-
 	.red{
 		background: #F91C1C;
 		color: white !important;
@@ -531,4 +580,14 @@
 	.redtext{
 		color: #F91C1C;
 	}
+
+	@media only screen and (max-width: 768px) {
+		.main-container{
+			margin: 0;
+		}
+
+		.enterSessionCard{
+			border: none;
+		}
+  	}
 </style>

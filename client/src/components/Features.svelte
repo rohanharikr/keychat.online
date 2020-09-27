@@ -39,5 +39,11 @@
 		font-weight: 100;
 		opacity: 0.8;
 	}
+
+	@media only screen and (max-width: 768px) {
+		#features{
+			display: none;
+		}
+	}
 </style>
 

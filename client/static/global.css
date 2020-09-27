@@ -13,7 +13,7 @@ html {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: HelveticaNeue;
+    font-family: HelveticaNeue, Helvetica, Roboto, sans-serif;
     color: #EEE;
 }
 

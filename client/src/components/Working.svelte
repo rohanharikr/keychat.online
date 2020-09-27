@@ -18,7 +18,7 @@
 		display: flex;
 		align-items: center;
 		font-weight: 200;
-		margin: 4rem 0;
+		margin-bottom: 4rem;
 	}
 
 	.circle{
@@ -30,7 +30,7 @@
 		background: #3F8BFE;
 		border-radius: 50%;
 		margin-right: 2rem;
-		font-weight: 400;
+		font-weight: 300;
 
 	}
 
@@ -39,7 +39,15 @@
 	}
 
 	#how ul{
-		margin: auto 18rem;
+		margin: 4rem 8rem;
+		margin-top: 6em;
+		columns: 2;
+		column-gap: 6rem;
 	}
 
+	@media only screen and (max-width: 768px) {
+		#how{
+			display: none;
+		}
+	}
 </style>
