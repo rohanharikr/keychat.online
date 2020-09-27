@@ -15,15 +15,15 @@
 	import AnimalAvatar from 'animal-avatars.js';
 	import { onMount } from 'svelte';
 	import getTime from '../utils/getTime';
+	import * as AES from '../utils/encrypt';
 	import isOnline from 'is-online';
-	// import showNotification from '../utils/notification';
 
  	let socket,
 		secretKey,
 		isChatBox = false,
 		joinKey = '',
 		joinedSession = false,
-		chatmessage,
+		chatmessage = '',
 		notification = false,
 		messages = [],
 		notificationMessage,
@@ -36,22 +36,24 @@
 		anon = new AnimalAvatar(),
 		isTyping = false,
 		network = true,
-		chatArea;
+		chatArea,
+		encKey = '123';
 
 	let userName,
 	 	userAvatar,
 	 	anonName,
 	 	anonAvatar;
 
- 	setInterval(async() => {
-		network = await isOnline();
-	}, 1000);
+ // 	setInterval(async() => {
+	// 	network = await isOnline();
+	// }, 1000);
 
- 	$: if(!network && isChatBox){
-		showNotification('You are offline', 'red');
- 	} else if (network && isChatBox && messages.length){
- 		showNotification('You are back online', 'green');
- 	}
+ 	// $: if(!network && isChatBox){
+		// showNotification('You are offline', 'red');
+ 	// }
+ 	// else if (network && isChatBox && messages.length){
+ 	// 	showNotification('You are back online', 'green');
+ 	// }
 
 	//connect to socket.io server
 	if(!socket){
@@ -82,7 +84,9 @@
 	})
 
     socket.on('sendMessage', msg =>{
-    	messages = [...messages, msg]
+    	const decryptedMessage = AES.decrypt(msg, encKey);
+    	console.log(decryptedMessage);
+    	messages = [...messages, decryptedMessage];
     	updateScroll();
     });
 
@@ -101,6 +105,7 @@
 	});
 
 	function startSession(){
+		// encKey = secretKey + secretKeyGenerator();
 		userName = user.getAvatarName(),
 	 	userAvatar = user.getAvatarUrl(),
 		anonName = anon.getAvatarName(),
@@ -130,10 +135,10 @@
 	}
 
 	function sendMessage(){
-		//udpating the local array as sender
-		messages = [...messages, {way: 'out', msg: chatmessage, time: getTime()}]
-		//sending data to server, as incoming message
-		socket.emit('message', {way: 'in', msg: chatmessage, time: getTime()});
+		messages = [...messages, {way: 'out', msg: chatmessage, time: getTime()}];
+		const data = {way: 'in', msg: chatmessage, time: getTime()};
+		const ciphertext = AES.encrypt(data, encKey);
+		socket.emit('message', ciphertext);
 		chatmessage = '';
 		inputRef.focus()
 		updateScroll();
@@ -146,7 +151,7 @@
 		} else {
 			copy(joinKey)
 		} 
-		showNotification("Secret Key copied to clipboard", 'green')
+		showNotification("Secret Key copied", 'green')
 		setTimeout(() => isCopied = false, 1250);
 	}
 
@@ -165,10 +170,10 @@
 		key = event.key;
 		keyCode = event.keyCode;
 
-		if (keyCode === 13 && chatmessage){
+		if (keyCode === 13 && chatmessage.length){
 			sendMessage();
 		} else if(keyCode === 13 && joinKey){
-			startSession()
+			joinSession();
 		}
 
 		if(typing == false && chatmessage) {
@@ -194,11 +199,11 @@
 		{#if !isChatBox}
 			<input placeholder="*****" maxlength="5" bind:value={joinKey} on:keydown={checkEnterPress}>
 			{#if notification}
-				<div transition:slide class="error" class:red={notificationMessage.color === 'red'}>
+				<div transition:slide class="error" class:redtext={notificationMessage.color === 'red'}>
 					{notificationMessage.msg}
 				</div>
 			{/if}
-			<button on:click={joinSession} style="background: #1f1e22" disabled={isLoading} class:focus={joinKey.length}>
+			<button on:click={joinSession} style="background: #1f1e22" disabled={!joinKey.length} class:focus={joinKey.length}>
 				{#if !isLoading}
 					Enter with secret code
 				{:else}
@@ -232,7 +237,7 @@
 					{/if}
 					{#each messages as {way, msg, time}}
 						{#if way === 'out'}
-							<div class="chatBubbleContainer" in:fly="{{y: 10, duration: 300}}">
+							<div class="chatBubbleContainer" style="margin-right: -0.4rem" in:fly="{{y: 10, duration: 300}}">
 								<div class="chatBubbleBlue">{msg}</div>
 								{#if !joinedSession}
 									<div class="avatar avatarUser" style="background-image: url({userAvatar})"></div>
@@ -261,7 +266,7 @@
 				</div>
 				<div class="messageBoxContainer flex" in:fade={{duration: 500}}>
 					<input class="messageBox" bind:value={chatmessage} placeholder="type your message here" bind:this={inputRef}  on:keydown={checkEnterPress}/>
-					<button on:click={sendMessage}><img src="send.png" alt="send icon" class="sendIcon">Send</button>
+					<button on:click={sendMessage} disabled={!chatmessage.length}><img src="send.png" alt="send icon" class="sendIcon">Send</button>
 				</div>
 			</div>
 		{/if}
@@ -307,6 +312,12 @@
 
 	.typingAnim{
 		height: 1.6rem;
+	}
+
+	button:disabled,
+	button[disabled]{
+  		background-color: #3c3c3c;
+  		pointer-events: none;
 	}
 
 	.enterSessionCard{
@@ -381,7 +392,7 @@
 
 	.timeStampUser{
 		text-align: right;
-		margin-right: 2.9rem;
+		margin-right: 2.8rem;
 	}
 
 	.timeStampAnon{
@@ -515,5 +526,9 @@
 	.red{
 		background: #F91C1C;
 		color: white !important;
+	}
+
+	.redtext{
+		color: #F91C1C;
 	}
 </style>

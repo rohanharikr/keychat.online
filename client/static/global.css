@@ -6,6 +6,7 @@
 
 html {
     scroll-behavior: smooth;
+    scrollbar-color: #201c29 #141318;
 }
 
 * {
