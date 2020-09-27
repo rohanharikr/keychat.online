@@ -37,7 +37,7 @@
 		isTyping = false,
 		network = true,
 		chatArea,
-		encKey = '123';
+		encKey;
 
 	let userName,
 	 	userAvatar,
@@ -75,8 +75,8 @@
 	    });
     }
 
-    //listening on incoming messages and pushes to array
 	socket.on('userData', data => {
+		encKey = data.encKey;
 		anonName = data.anonName;
 		anonAvatar = data.anonAvatar;
 		userName = data.userName;
@@ -105,13 +105,13 @@
 	});
 
 	function startSession(){
-		// encKey = secretKey + secretKeyGenerator();
+		encKey = secretKey + secretKeyGenerator();
 		userName = user.getAvatarName(),
 	 	userAvatar = user.getAvatarUrl(),
 		anonName = anon.getAvatarName(),
 	 	anonAvatar = anon.getAvatarUrl(),
 		secretKey = secretKeyGenerator();
-		socket.emit('newRoom', {secretKey, userName, userAvatar, anonName, anonAvatar});
+		socket.emit('newRoom', {secretKey, userName, userAvatar, anonName, anonAvatar, encKey});
 		isChatBox = true;
 	}
 
