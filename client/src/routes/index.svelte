@@ -86,7 +86,6 @@
     }
 
 	socket.on('userData', data => {
-		console.log(data);
 		encKey = data.encKey;
 		anonName = data.anonName;
 		anonAvatar = data.anonAvatar;
@@ -141,6 +140,8 @@
 			 if(!sessionInProgress){
 				isChatBox = true;
 				joinedSession = true;
+				isChatLocked = true;
+
 			} else{
 				isLoadingJoin = false;
 				showNotification('Session does not exist', 'red');
@@ -238,19 +239,16 @@
     		chatArea.scrollTop = chatArea.scrollHeight;  
   		}, 0);
 	}
-
-	function dontScroll(){
-		// e.preventDefault(); e.stopPropagation();
-    	window.scrollTop(0,0);
-	}
 </script>
 
 <!-- causing a lot of bugs, will fix -->
 <!-- <svelte:window on:keydown={checkEnterPress}/> -->
-<div class="main-container">
-<Header src={isChatBox ? "chatsecureonline.svg" : "chatsecureoffline.svg"} />
-<main>
-	<div class="enterSessionCard">
+<div class="main-container" class:modifier={isChatBox}>
+<div class:modifier--displayNone={isChatBox}>
+	<Header src={isChatBox ? "chatsecureonline.svg" : "chatsecureoffline.svg"} />
+</div>
+<main class:main--modifier={isChatBox}>
+	<div class="enterSessionCard" class:enterSessionCard--modifier={isChatBox}>
 		{#if !isChatBox}
 			<input placeholder="*****" minlength="5" maxlength="5" bind:value={joinKey} on:keydown={checkEnterPress}>
 			{#if notification}
@@ -273,7 +271,7 @@
 				<div class="sessionInfo flex" in:fade={{duration: 500}}>
 					<div class="secretKey">
 						<!-- <img src="secretkey.svg" alt="secret key" class="secretKeyIcon"> -->
-						<div data-tooltip="Share this secret code with anyone to fchating">{secretKey || joinKey}</div>
+						<div data-tooltip="Share this secret code with anyone to start chatting">{secretKey || joinKey}</div>
 						<img src={isCopied ? "copied.svg" : "copy.svg"} alt="copied icon" class="copyIcon" on:click={copySecretKey}>
 					</div>
 					<ul>
@@ -325,14 +323,21 @@
 						<li on:click={()=>{messages = []}}><img src="clear.png" alt="clear icon"><div>clear</div></li>
 						<li on:click={saveHistory}><img src="download.png" alt="download icon"><div>download</div></li>
 					</ul>
-				{/if}			
+				{/if}		
+				{#if !isChatLocked}	
+					<div class="loadingChat" transition:slide data-tooltip="Messages sent now are not received by the end user">
+						<img src="loader.gif" alt="loading animation" class="loading">
+						<p>waiting for a user to join...</p>
+					</div>
+				{/if}
 				<div class="messageBoxContainer flex" in:fade={{duration: 500}}>
-					<input class="messageBox" on:click={dontScroll} bind:value={chatmessage} placeholder="type your message here" bind:this={inputRef}  on:keydown={checkEnterPress}/>
+					<input class="messageBox" bind:value={chatmessage} placeholder="type your message here" bind:this={inputRef}  on:keydown={checkEnterPress} disabled={!isChatLocked} />
 					<button on:click={sendMessage} disabled={!chatmessage.length || chatmessage === "/"}><img src="send.png" alt="send icon" class="sendIcon">Send</button>
 				</div>
 				{#if !chatOptions}
 					<p class="chatOptionsHelper" transition:slide>type '/' for chat options</p>
 				{/if}
+				<img src="chatsecureoffline.svg" alt="logo" class="chatBoxLogo">
 			</div>
 		{/if}
 	</div>
@@ -345,14 +350,22 @@
 			{/if}
 		</button>
 	{:else}
-		<p class="warning" in:fade>Please do not share any personal information as there is no proper way to know who is on the other side and at the same time, keep the channel anonymous.</p>
+		<p class="warning" in:fade class:modifier--displayNone={isChatBox}>Please do not share any personal information as there is no proper way to know who is on the other side and at the same time, keep the channel anonymous.</p>
 	{/if}
 </main>
-<Features features={$featuresData} />
-<Hightlight />
-<Working steps={$working} />
+<div class:mobileChatActive={isChatBox}>
+	<Features features={$featuresData} />
 </div>
-<Footer />
+<div class:mobileChatActive={isChatBox}>
+	<Hightlight />
+</div>
+<div class:mobileChatActive={isChatBox}>
+	<Working steps={$working} />
+</div>
+</div>
+<div class:mobileChatActive={isChatBox}>
+	<Footer />
+</div>
 
 <style>
 	main{
@@ -421,6 +434,22 @@
 
 	.focus{
 		background: #6976f7 !important;
+	}
+
+	.loadingChat{
+		display: flex;
+		align-items: center;
+		margin-bottom: 1rem;
+	}
+
+	.loadingChat p{
+		font-size: 0.8rem;
+		margin-left: 0.3rem;
+		font-weight: 200;
+	}
+
+	.loading{
+		height: 1.2rem;
 	}
 
 	.avatar{
@@ -632,9 +661,48 @@
 		color: #F91C1C;
 	}
 
+	.chatBoxLogo{
+		display: none;
+	}
+
 	@media only screen and (max-width: 768px) {
 		main{
 			overflow-x: hidden;
+		}
+
+		.main--modifier{
+			margin: 0;
+			max-width: inherit;
+		}
+
+		.chatBoxLogo{
+			display: block;
+			height: 1.2rem;
+			float: right;
+			filter: grayscale(100%);
+			opacity: 0.6;
+			margin-top: 0.4rem;
+		}
+
+		.mobileChatActive{
+			display: none;
+		}
+
+		.modifier{
+			margin: 0;
+		}
+
+		.chatArea{
+			height: 66vH;
+		}
+
+		.enterSessionCard--modifier{
+			height: 100%;
+			border: none;
+		}
+
+		.modifier--displayNone{
+			display: none;
 		}
   	}
 </style>
