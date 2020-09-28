@@ -24,7 +24,7 @@
 	}
 
 	.footerContainer{
-		width: 70%;
+		width: 71%;
 		height: 100%;
 		margin: auto;
 		display: flex;

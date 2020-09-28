@@ -1,7 +1,14 @@
 {
-  "name": "TODO",
-  "description": "TODO",
+  "name": "chatSecureBackend",
+  "description": "frontend for the chat secure application",
   "version": "0.0.1",
+  "keywords": [
+    "chat",
+    "secure",
+    "private"
+  ],
+  "author": "rohanharikr",
+  "license": "MIT",
   "scripts": {
     "dev": "sapper dev",
     "build": "sapper build --legacy",
@@ -14,7 +21,6 @@
     "copy-to-clipboard": "^3.3.1",
     "crypto-js": "^3.1.9-1",
     "file-saver": "^2.0.2",
-    "is-online": "^8.4.0",
     "polka": "next",
     "sirv": "^1.0.0",
     "socket.io-client": "^2.3.0"
@@ -33,6 +39,7 @@
     "rollup-plugin-svelte": "^6.0.0",
     "rollup-plugin-terser": "^7.0.0",
     "sapper": "^0.28.0",
-    "svelte": "^3.17.3"
+    "svelte": "^3.17.3",
+    "svelte-internet-connection": "^0.1.2"
   }
 }

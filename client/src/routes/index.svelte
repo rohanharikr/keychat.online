@@ -13,11 +13,10 @@
 	import { quintOut } from 'svelte/easing';
 	import copy from 'copy-to-clipboard';
 	import AnimalAvatar from 'animal-avatars.js';
-	import { onMount } from 'svelte';
 	import getTime from '../utils/getTime';
 	import * as AES from '../utils/encrypt';
-	import isOnline from 'is-online';
 	import FileSaver from 'file-saver';
+	import InternetConnection from "svelte-internet-connection";
 
  	let socket,
 		secretKey,
@@ -53,10 +52,6 @@
 	 } else{
 	 	chatOptions = false;
 	 }
-
- 	setInterval(async() => {
-		network = await isOnline();
-	}, 1000);
 
  	// $: if(!network && isChatBox){
 		// showNotification('You are offline', 'red');
@@ -279,7 +274,12 @@
 							<div class={isChatLocked ? 'status' : joinedSession ? 'status' : 'status red'}></div>
 							Chat {isChatLocked ? 'Locked' : joinedSession ? 'Locked' : 'Open'}
 						</li>
-						<li data-tooltip="Indicates if you are online or not" style="cursor: pointer;"><div class="status" class:red={!network}></div>Network</li>
+						<li data-tooltip="Indicates if you are online or not" style="cursor: pointer;">
+							<InternetConnection let:status>
+								<div class="status" class:red={status === 'offline'}></div>
+							</InternetConnection>
+							Network
+						</li>
 					</ul>
 				</div>
 				<div class="chatArea" in:fade={{duration: 500}} bind:this={chatArea}>

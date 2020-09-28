@@ -1,17 +1,17 @@
 {
-  "name": "server",
+  "name": "chatSecureFrontend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "backend for the chat secure application",
+  "main": "server.js",
   "scripts": {
     "build": "npm install --prefix client && npm run build --prefix client",
     "client": "npm run dev --prefix client",
     "server": "nodemon server.js --ignore 'client/'",
     "dev": "concurrently \"npm run server\" \"npm run client\" "
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["chat", "secure", "private"],
+  "author": "rohanharikr",
+  "license": "MIT",
   "dependencies": {
     "concurrently": "^5.3.0",
     "express": "^4.17.1",
