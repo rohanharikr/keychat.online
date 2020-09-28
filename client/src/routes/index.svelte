@@ -17,6 +17,7 @@
 	import getTime from '../utils/getTime';
 	import * as AES from '../utils/encrypt';
 	import isOnline from 'is-online';
+	import FileSaver from 'file-saver';
 
  	let socket,
 		secretKey,
@@ -47,8 +48,11 @@
 	 	anonAvatar;
 
 
-	 $: chatOptions = true ? chatmessage === "/" : false;
-
+	 $: if (chatmessage === "/" || chatmessage[chatmessage.length-1] == "/"){
+		chatOptions = true;	 	
+	 } else{
+	 	chatOptions = false;
+	 }
 
  	setInterval(async() => {
 		network = await isOnline();
@@ -82,6 +86,7 @@
     }
 
 	socket.on('userData', data => {
+		console.log(data);
 		encKey = data.encKey;
 		anonName = data.anonName;
 		anonAvatar = data.anonAvatar;
@@ -143,6 +148,29 @@
 		}, 1500)
 	}
 
+	function closeSession(){
+		isChatBox = false;
+		chatmessage = '';
+		messages = [];
+		joinKey = '';
+		joinedSession = false;
+		chatmessage = '';
+		notification = false;
+		isChatLocked = false;
+		sessionInProgress = false;
+		isLoadingJoin = false;
+		isLoadingStart = false;
+		isTyping = false;
+		network = true;
+		chatArea;
+		encKey;
+		chatOptions = false;
+		userName = false;
+		anonName = false;
+		userAvatar = false;
+		anonAvatar = false;
+	}
+
 	function sendMessage(){
 		messages = [...messages, {way: 'out', msg: chatmessage, time: getTime()}];
 		const data = {way: 'in', msg: chatmessage, time: getTime()};
@@ -173,6 +201,12 @@
 		socket.emit('noLongerTypingMessage');
 	}
 
+	async function saveHistory(){
+		const data = JSON.stringify(messages);
+		const blob = await new Blob([data], {type: "text/plain;charset=utf-8"});
+		FileSaver.saveAs(blob, `${secretKey || joinKey}.txt`);
+	}
+
 	function checkEnterPress(event){
 		let key;
 		let keyCode;
@@ -201,8 +235,13 @@
 
 	function updateScroll() {
 		setTimeout(() => {
-    		chatArea.scrollTop = chatArea.scrollHeight;   
+    		chatArea.scrollTop = chatArea.scrollHeight;  
   		}, 0);
+	}
+
+	function dontScroll(){
+		// e.preventDefault(); e.stopPropagation();
+    	window.scrollTop(0,0);
 	}
 </script>
 
@@ -234,7 +273,7 @@
 				<div class="sessionInfo flex" in:fade={{duration: 500}}>
 					<div class="secretKey">
 						<!-- <img src="secretkey.svg" alt="secret key" class="secretKeyIcon"> -->
-						<div data-tooltip="Share this secret code with anyone to start chating">{secretKey || joinKey}</div>
+						<div data-tooltip="Share this secret code with anyone to fchating">{secretKey || joinKey}</div>
 						<img src={isCopied ? "copied.svg" : "copy.svg"} alt="copied icon" class="copyIcon" on:click={copySecretKey}>
 					</div>
 					<ul>
@@ -256,18 +295,18 @@
 							<div class="chatBubbleContainer" in:fly="{{y: 10, duration: 300}}">
 								<div class="chatBubbleBlue">{msg}</div>
 								{#if !joinedSession}
-									<div class="avatar avatarUser tooltip-bottom" style="background-image: url({userAvatar})" data-tooltip="your mom"></div>
+									<div class="avatar avatarUser tooltip-bottom-right" style="background-image: url({userAvatar}); font-size: 0.8rem;" data-tooltip={userName}></div>
 								{:else}
-									<div class="avatar avatarUser tooltip-bottom" style="background-image: url({anonAvatar})" data-tooltip="your dad"></div>
+									<div class="avatar avatarUser tooltip-bottom-right" style="background-image: url({anonAvatar}); font-size: 0.8rem;" data-tooltip={anonName}></div>
 								{/if}
 							</div>
 							<div class="timeStamp timeStampUser" in:fly="{{y: 10, duration: 300}}">{time}</div>
 						{:else}
 							<div class="chatBubbleContainer" in:fly="{{y: 10, duration: 300}}">
 								{#if !joinedSession}
-									<div class="avatar avatarAnon tooltip-bottom" style="background-image: url({anonAvatar})" data-tooltip="your dad"></div>
+									<div class="avatar avatarAnon tooltip-bottom-left" style="background-image: url({anonAvatar}); font-size: 0.8rem;" data-tooltip={anonName}></div>
 								{:else}
-									<div class="avatar avatarAnon tooltip-bottom" style="background-image: url({userAvatar})" data-tooltip="your dad"></div>
+									<div class="avatar avatarAnon tooltip-bottom-left" style="background-image: url({userAvatar}); font-size: 0.8rem;" data-tooltip={userName}></div>
 								{/if}
 								<div class="chatBubbleGrey">{msg}</div>
 							</div>
@@ -282,15 +321,18 @@
 				</div>
 				{#if chatOptions}
 					<ul class="chatOptions" transition:slide>
-						<li><img src="close.png" alt="close icon"><div>close</div></li>
-						<li><img src="clear.png" alt="clear icon"><div>clear</div></li>
-						<li><img src="download.png" alt="download icon"><div>download</div></li>
+						<li on:click={closeSession}><img src="close.png" alt="close icon"><div>close</div></li>
+						<li on:click={()=>{messages = []}}><img src="clear.png" alt="clear icon"><div>clear</div></li>
+						<li on:click={saveHistory}><img src="download.png" alt="download icon"><div>download</div></li>
 					</ul>
-				{/if}
+				{/if}			
 				<div class="messageBoxContainer flex" in:fade={{duration: 500}}>
-					<input class="messageBox" bind:value={chatmessage} placeholder="type your message here" bind:this={inputRef}  on:keydown={checkEnterPress}/>
-					<button on:click={sendMessage} disabled={!chatmessage.length || chatmessage==="/" }><img src="send.png" alt="send icon" class="sendIcon">Send</button>
+					<input class="messageBox" on:click={dontScroll} bind:value={chatmessage} placeholder="type your message here" bind:this={inputRef}  on:keydown={checkEnterPress}/>
+					<button on:click={sendMessage} disabled={!chatmessage.length || chatmessage === "/"}><img src="send.png" alt="send icon" class="sendIcon">Send</button>
 				</div>
+				{#if !chatOptions}
+					<p class="chatOptionsHelper" transition:slide>type '/' for chat options</p>
+				{/if}
 			</div>
 		{/if}
 	</div>
@@ -457,6 +499,7 @@
 		padding: 1rem;
 		text-align: center;
 		overflow-y: scroll;
+		margin-bottom: 1rem;
 	}
 
 	.secretKey{
@@ -491,7 +534,7 @@
 	}
 
 	.chatOptions{
-		margin-bottom: 1.4rem;
+		margin-bottom: 0.8rem;
 		display: flex;
 		align-items: center;
 		border-radius: 0.2rem;
@@ -513,6 +556,14 @@
 	.chatOptions img{
 		height: 0.8rem;
 		margin-right: 0.4rem;
+	}
+
+	.chatOptionsHelper{
+		font-weight: 300;
+		margin-left: 1rem;
+		margin-top: 0.8rem;
+		opacity: 0.6;
+		font-size: 0.6rem;
 	}
 
 	.chatBubbleBlue{
@@ -582,12 +633,8 @@
 	}
 
 	@media only screen and (max-width: 768px) {
-		.main-container{
-			margin: 0;
-		}
-
-		.enterSessionCard{
-			border: none;
+		main{
+			overflow-x: hidden;
 		}
   	}
 </style>

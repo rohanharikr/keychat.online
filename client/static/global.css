@@ -66,6 +66,10 @@ input:focus {
     border: 1px solid #35363B;
 }
 
+a {
+    text-decoration: none;
+}
+
 button {
     width: 100%;
     height: 2.8rem;
@@ -83,4 +87,17 @@ button {
 
 button:hover {
     filter: brightness(120%);
+}
+
+button:focus {
+    outline: none;
+}
+
+@media only screen and (max-width: 768px) {
+
+    #highlight h1,
+    #how h1 {
+        font-size: 1rem;
+        font-weight: 300;
+    }
 }

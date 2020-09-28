@@ -43,11 +43,27 @@
 		margin-top: 6em;
 		columns: 2;
 		column-gap: 6rem;
+		margin-bottom: 0;
 	}
 
 	@media only screen and (max-width: 768px) {
-		#how{
-			display: none;
+		#how .container{
+			width: auto;
+		}
+
+		ul li{
+			margin-bottom: 2.2rem;
+		}
+
+		#how ul{
+			margin: 1rem;
+			columns: 1;
+			font-size: 0.8rem;
+			margin-top: 2.6rem;
+		}
+		
+		.circle{
+			margin-right: 1rem;
 		}
 	}
 </style>

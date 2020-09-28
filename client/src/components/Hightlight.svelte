@@ -1,15 +1,15 @@
 <section id="highlight">
 	<div class="container">
 		<h1>We don’t store any chat histories. Ever.</h1>
-		<div class="sessionDeleted">
+		<div class="sessionDeleted flex">
 			<img src="session-deleted.svg" alt="session deleted">
 			<p style="margin-right: 2rem;">All sessions are deleted after both the parties exist the room</p>
 		</div>
-		<div class="noInterruptions">
+		<div class="noInterruptions flex">
 			<p style="margin-left: 2rem;">No intrusions or interruptions. Chat is locked once two people join a room</p>
 			<img src="nointerruptions.svg" alt="no interruptions">
 		</div>
-		<div class="sessionDeleted" style="margin-top: -10rem;">
+		<div class="sessionDeleted flex modifier">
 			<img src="opensource.svg" alt="session deleted">
 			<p style="width: 14rem; margin-bottom: 0; margin-right: 2rem;">Source code is open under the MIT license</p>
 		</div>
@@ -21,12 +21,9 @@
 		margin: 8rem 0;
 	}
 
-	.sessionDeleted{
+	.sessionDeleted, .noInterruptions{
 		margin: 6rem auto;
 		width: 70%;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
 	}
 
 	.sessionDeleted p{
@@ -37,12 +34,7 @@
 	}
 
 	.noInterruptions{
-		margin: 6rem auto;
 		margin-top: -10rem;
-		width: 70%;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
 	}
 
 	.noInterruptions p{
@@ -55,9 +47,51 @@
 		height: 26rem;
 	}
 
+	.modifier{
+		margin-top: -10rem;
+	}
+
 	@media only screen and (max-width: 768px) {
+		#highlight h1{
+			margin-bottom: 2rem;
+		}
+
+		.modifier{
+			margin-top: 0;
+		}
+
 		#highlight{
-			display: none;
+			margin: 4rem 0;
+		}
+
+		.container{
+			width: auto;
+		}
+
+		.sessionDeleted img, .noInterruptions img{
+			height: 12rem;
+		}
+
+		.sessionDeleted, .noInterruptions{
+			margin: 0 auto;
+			width: 100%;
+		}
+
+		.noInterruptions img{
+			margin-right: 2rem;
+		}
+
+		p{
+			font-size: 0.9rem;
+		}
+
+		.sessionDeleted p{
+			margin-bottom: 4rem;
+			margin-left: 0.9rem; 
+		}
+
+		.sessionDeleted img{
+			margin-left: 2rem;
 		}
 	}
 </style>

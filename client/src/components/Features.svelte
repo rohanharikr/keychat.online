@@ -15,7 +15,7 @@
 
 <style>
 	#features{
-		margin-top: 10rem;
+		margin-top: 8rem;
 		height: auto;
 		margin-bottom: 2rem;
 	}
@@ -42,7 +42,27 @@
 
 	@media only screen and (max-width: 768px) {
 		#features{
-			display: none;
+			margin-top: 4rem;
+			overflow-x: scroll;
+		}
+		
+		.container{
+			width: 40rem;
+		}
+
+		.featuresCard{
+			height: 8rem;
+			width: 12rem;
+			padding: 1rem;
+			/*margin-right: 1rem;*/
+		}
+
+		.featuresCard h1{
+			font-size: 1rem;
+		}
+
+		.featuresCard p{
+			font-size: 0.8rem;
 		}
 	}
 </style>

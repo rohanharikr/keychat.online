@@ -22,7 +22,12 @@
 
 	@media only screen and (max-width: 768px) {
 		header{
-			display: none;
+			height: 4rem;
+			margin-bottom: -0.8rem;
+		}
+
+		img{
+			height: 1.8rem;
 		}
 	}
 </style>
