@@ -1,5 +1,5 @@
 {
-  "name": "chatSecureFrontend",
+  "name": "chatSecureBackend",
   "version": "1.0.0",
   "description": "backend for the chat secure application",
   "main": "server.js",
