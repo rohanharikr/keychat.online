@@ -11,7 +11,6 @@ io.on('connection', socket => {
             secretRoom = data.joinKey;
             anonPublicKey = data.anonPublicKey;
             socket.join(secretRoom);
-            console.log(anonPublicKey, userPublicKey)
             io.in(secretRoom).emit('userData', { userName, userAvatar, anonName, anonAvatar, encKey, userPublicKey, anonPublicKey, nonce });
             socket.broadcast
                 .to(secretRoom)
@@ -44,7 +43,6 @@ io.on('connection', socket => {
 
     //message to room
     socket.on('message', message => {
-        console.log(message);
         socket.broadcast.to(secretRoom).emit('sendMessage', message);
     });
 

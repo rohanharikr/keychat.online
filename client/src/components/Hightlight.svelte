@@ -44,7 +44,7 @@
 	}
 
 	.sessionDeleted img, .noInterruptions img{
-		height: 26rem;
+		height: 24rem;
 	}
 
 	.modifier{

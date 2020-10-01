@@ -375,7 +375,7 @@
 					</ul>
 				{/if}		
 				{#if !isChatLocked}	
-					<div class="loadingChat" transition:slide data-tooltip="Messages sent now are not received by the end use">
+					<div class="loadingChat" transition:slide data-tooltip="Messages cannot be sent unless key exhange happens">
 						<img src="loader.gif" alt="loading animation" class="loading">
 						<p>waiting for a user to join...</p>
 					</div>
@@ -400,7 +400,7 @@
 			{/if}
 		</button>
 	{:else}
-		<p class="warning" in:fade class:modifier--displayNone={isChatBox}>Please do not share any personal information as there is no proper way to know who is on the other side and at the same time, keep the channel anonymous.</p>
+		<p class="warning" in:fade class:modifier--displayNone={isChatBox}>Please do not share personal information with anyone</p>
 	{/if}
 </main>
 <div class:mobileChatActive={isChatBox}>

@@ -8,9 +8,18 @@
     --border-grey: #35363B;
 }
 
-html {
-    scroll-behavior: smooth;
-    scrollbar-color: #201c29 var(--bg-color);
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #201c29;
+    height: 4px;
+    border-radius: 8px;
 }
 
 * {
@@ -21,14 +30,13 @@ html {
     color: #EEE;
 }
 
-body {
-    background: var(--bg-color);
+html {
+    scroll-behavior: smooth;
+    scrollbar-color: #201c29 var(--bg-color);
 }
 
-body::-webkit-scrollbar-thumb {
-    background-color: #e81d61;
-    border-radius: 6px;
-    border: 3px solid #e81d61;
+body {
+    background: var(--bg-color);
 }
 
 li {

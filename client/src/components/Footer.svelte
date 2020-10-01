@@ -1,15 +1,35 @@
+<script>
+	import { onMount } from 'svelte';
+	import countapi from 'countapi-js';
+
+	let hits, id;
+
+	onMount( async ()=>{
+		await countapi.visits('global').then((result) => {
+  			hits = result.value
+		});
+
+		await fetch('https://api.github.com/repos/rohanharikr/chatsecure.online/commits')
+			.then((response) => response.json())
+			.then((data) => {
+			id = data[0].sha.slice(0, 7)
+		})
+	})
+
+</script>
+
 <footer class="footer">
 	<div class="footerContainer">
 		<img src="chatsecureonline.svg" alt="logo" class="logo">
 		<ul>
 			<li>&#169; 2020 MIT License</li>
 			<a href="https://www.twitter.com/rohanharikr"><li>made by rohanharikr</li></a>
-			<li>123 happy souls</li>
-			<li>illustrations from growwwkit</li>
-			<a href="https://github.com/rohanharikr/anonchat">
+			<li>{hits || '...'} happy souls</li>
+			<a href="https://growwwkit.com/"><li>illustrations from growwwkit</li></a>
+			<a href="https://github.com/rohanharikr/chatsecure.online">
 				<li class="link"><img src="github.svg" alt="github logo" class="footericon"></li>
 			</a>
-			<li>commit 712j1</li>
+			<li>commit {id || '...'}</li>
 		</ul>
 		<img src="chatsecureonline.svg" alt="logo" class="mobileLogo">
 	</div>
