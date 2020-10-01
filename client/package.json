@@ -23,7 +23,9 @@
     "file-saver": "^2.0.2",
     "polka": "next",
     "sirv": "^1.0.0",
-    "socket.io-client": "^2.3.0"
+    "socket.io-client": "^2.3.0",
+    "tweetnacl": "^1.0.3",
+    "tweetnacl-util": "^0.15.1"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",

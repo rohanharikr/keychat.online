@@ -9,7 +9,11 @@
     "server": "nodemon server.js --ignore 'client/'",
     "dev": "concurrently \"npm run server\" \"npm run client\" "
   },
-  "keywords": ["chat", "secure", "private"],
+  "keywords": [
+    "chat",
+    "secure",
+    "private"
+  ],
   "author": "rohanharikr",
   "license": "MIT",
   "dependencies": {

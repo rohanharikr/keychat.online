@@ -14,9 +14,10 @@
 	import copy from 'copy-to-clipboard';
 	import AnimalAvatar from 'animal-avatars.js';
 	import getTime from '../utils/getTime';
-	import * as AES from '../utils/encrypt';
 	import FileSaver from 'file-saver';
 	import InternetConnection from "svelte-internet-connection";
+	import nacl from 'tweetnacl';
+	import naclUtil from 'tweetnacl-util';
 
  	let socket,
 		secretKey,
@@ -46,6 +47,11 @@
 	 	anonName,
 	 	anonAvatar;
 
+	let userPublicKey,
+		userPrivateKey,
+		anonPublicKey,
+		anonPrivateKey,
+		nonce;
 
 	 $: if (chatmessage === "/" || chatmessage[chatmessage.length-1] == "/"){
 		chatOptions = true;	 	
@@ -86,11 +92,23 @@
 		anonAvatar = data.anonAvatar;
 		userName = data.userName;
 		userAvatar = data.userAvatar;
+		nonce = naclUtil.decodeBase64(data.nonce);
+		userPublicKey = naclUtil.decodeBase64(data.userPublicKey);
+		anonPublicKey = naclUtil.decodeBase64(data.anonPublicKey);
 	})
 
-    socket.on('sendMessage', msg =>{
-    	const decryptedMessage = AES.decrypt(msg, encKey);
-    	messages = [...messages, decryptedMessage];
+    socket.on('sendMessage', message => {
+    	let payload, utf8, boxData;
+    	boxData = naclUtil.decodeBase64(message);
+    	if(!joinedSession){
+			payload = nacl.box.open(boxData, nonce, anonPublicKey, userPrivateKey)
+			utf8 = JSON.parse(naclUtil.encodeUTF8(payload));
+		} else{
+			payload = nacl.box.open(boxData, nonce, userPublicKey, anonPrivateKey)
+			utf8 = JSON.parse(naclUtil.encodeUTF8(payload));
+			
+		}
+		messages = [...messages, utf8];
     	updateScroll();
     });
 
@@ -109,13 +127,19 @@
 	});
 
 	function startSession(){
+		const keys = nacl.box.keyPair();
+		userPublicKey = keys.publicKey;
+		userPublicKey = naclUtil.encodeBase64(userPublicKey);
+		userPrivateKey = keys.secretKey;
+		nonce = naclUtil.encodeBase64(nacl.randomBytes(24));
+
 		secretKey = secretKeyGenerator();
 		encKey = secretKey + secretKeyGenerator();
 		userName = user.getAvatarName(),
 	 	userAvatar = user.getAvatarUrl(),
 		anonName = anon.getAvatarName(),
 	 	anonAvatar = anon.getAvatarUrl(),
-		socket.emit('newRoom', {secretKey, userName, userAvatar, anonName, anonAvatar, encKey});
+		socket.emit('newRoom', {secretKey, userName, userAvatar, anonName, anonAvatar, encKey, userPublicKey, nonce});
 		isLoadingStart = true;
 		setTimeout(() => {
 			isLoadingStart = false;
@@ -124,8 +148,13 @@
 	}
 
 	function joinSession(){
+		const keys = nacl.box.keyPair();
+		anonPublicKey = keys.publicKey;
+		anonPublicKey = naclUtil.encodeBase64(anonPublicKey);
+		anonPrivateKey = keys.secretKey;
+
 		isLoadingJoin = true;
-		socket.emit('joinRoom', joinKey)
+		socket.emit('joinRoom', {joinKey, anonPublicKey})
 		socket.on('sessionLocked', () => {
 			sessionInProgress = true;
 		});	
@@ -169,9 +198,25 @@
 
 	function sendMessage(){
 		messages = [...messages, {way: 'out', msg: chatmessage, time: getTime()}];
-		const data = {way: 'in', msg: chatmessage, time: getTime()};
-		const ciphertext = AES.encrypt(data, encKey);
-		socket.emit('message', ciphertext);
+		let data = JSON.stringify({way: 'in', msg: chatmessage, time: getTime()});
+		let box;
+		if(joinedSession){
+			box = nacl.box(
+  			naclUtil.decodeUTF8(data),
+  			nonce,
+  			userPublicKey,
+  			anonPrivateKey)
+		} else{
+			box = nacl.box(
+  			naclUtil.decodeUTF8(data),
+  			nonce,
+  			anonPublicKey,
+  			userPrivateKey)
+		}
+
+		console.log(box);
+		box = naclUtil.encodeBase64(box);
+		socket.emit('message', box);
 		chatmessage = '';
 		inputRef.focus()
 		updateScroll();
