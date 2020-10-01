@@ -26,7 +26,7 @@
 			<a href="https://www.twitter.com/rohanharikr"><li>made by rohanharikr</li></a>
 			<li>{hits || '...'} happy souls</li>
 			<a href="https://growwwkit.com/"><li>illustrations from growwwkit</li></a>
-			<a href="https://github.com/rohanharikr/chatsecure.online">
+			<a href="https://github.com/rohanharikr/chatsecure.online" style="margin-bottom: 0.4rem;">
 				<li class="link"><img src="github.svg" alt="github logo" class="footericon"></li>
 			</a>
 			<li>commit {id || '...'}</li>
@@ -115,12 +115,17 @@
 		}
 
 		.mobileLogo{
+			margin-bottom: -0.4rem;
+		}
+
+		.mobileLogo{
 			display: block;
 			height: 1.6rem;
 			float: right;
 			margin-left: auto;
 			filter: grayscale(100%);
 			opacity: 0.8;
+			margin-top: -4.4em;
 		}
 	}
 </style>

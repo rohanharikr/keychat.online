@@ -1,5 +1,5 @@
 <div align="center">
-  <h5>When I wrote this, only God and I understood what I was doing. Now, only God knows.</a></h5>
+  <h5>When I wrote this, only God and I understood what I was doing. Now, only God knows.</h5>
   <br>
   <a href="https://chatsecure.online"><img src="client/static/logo-512.png" alt="chatsecure.online logo" height="128"></a>
   <br><br>
