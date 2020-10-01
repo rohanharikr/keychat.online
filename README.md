@@ -20,8 +20,6 @@
 
 **Save:** Option to save chat history
 
-**Save:** Option to save chat history
-
 ## **Demo**
 
 [https://chatsecure.online](https://chatsecure.online)
@@ -57,30 +55,4 @@ This project is licensed under the [MIT License](https://opensource.org/licenses
 ## **Acknowledgements**
 
 - Illustrations from growwwkit
-- To these awesome people
-<div style="margin-top:8px;">
-<a href="https://github.com/fraggerfox" target="_blank" rel="noopener">
-<img
-  style="max-width: 28px; max-height: 28px; border-radius: 100%"
-  src="https://avatars2.githubusercontent.com/u/189939?s=460&v=4?size=64"
-  alt="Santosh Raju"
-/>
-<a href="https://github.com/UnnikrishnanBhargavakurup" target="_blank" rel="noopener">
-<img
-  style="max-width: 28px; max-height: 28px; border-radius: 100%"
-  src="https://avatars3.githubusercontent.com/u/825646?s=460&v=4"
-  alt="Unnikrishnan B"
-/>
-<a href="https://github.com/antojose" target="_blank" rel="noopener">
-<img
-  style="max-width: 28px; max-height: 28px; border-radius: 100%"
-  src="https://avatars0.githubusercontent.com/u/102533?s=460&u=1a0eceb42f9a18de43dd5d5e12e3fa8e2ea1278b&v=4"
-  alt="Anto Jose"
-/>
-<a href="https://github.com/fazfactor" target="_blank" rel="noopener">
-<img
-  style="max-width: 28px; max-height: 28px; border-radius: 100%"
-  src="https://avatars3.githubusercontent.com/u/12577569?s=460&v=4"
-  alt="Rahul Harikumar"
-/>
-</div>
+- [Anto Jose](https://github.com/antojose), [Santosh Raju](https://github.com/fraggerfox), [Rahul Harikumar](https://github.com/antojose), [Unnikrishnan B](https://github.com/UnnikrishnanBhargavakurup)
