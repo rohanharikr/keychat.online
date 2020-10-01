@@ -183,6 +183,8 @@
 		anonName = false;
 		userAvatar = false;
 		anonAvatar = false;
+
+		socket.emit('disconnecting')
 	}
 
 	function sendMessage(){

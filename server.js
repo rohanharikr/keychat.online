@@ -54,6 +54,15 @@ io.on('connection', socket => {
         socket.broadcast.to(secretRoom).emit('noLongerTyping');
     })
 
+    socket.on('disconnecting', () => {
+        socket.leave(secretRoom);
+        socket.broadcast
+            .to(secretRoom)
+            .emit(
+                //this fires a notification on the frontend , 0 = disconnect, 1 = joined
+                'botMessage', 0);
+    })
+
     //fired when a user disconnects
     socket.on('disconnect', () => {
         socket.broadcast
