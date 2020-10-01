@@ -26,8 +26,8 @@
 			<a href="https://www.twitter.com/rohanharikr"><li>made by rohanharikr</li></a>
 			<li>{hits || '...'} happy souls</li>
 			<a href="https://growwwkit.com/"><li>illustrations from growwwkit</li></a>
-			<a href="https://github.com/rohanharikr/chatsecure.online" style="margin-bottom: 0.4rem;">
-				<li class="link"><img src="github.svg" alt="github logo" class="footericon"></li>
+			<a href="https://github.com/rohanharikr/chatsecure.online">
+				<li class="link" style="margin-bottom: 0.2rem;"><img src="github.svg" alt="github logo" class="footericon"></li>
 			</a>
 			<li>commit {id || '...'}</li>
 		</ul>

@@ -8,17 +8,12 @@
     --border-grey: #35363B;
 }
 
-::-webkit-scrollbar {
-    width: 6px;
-}
-
 ::-webkit-scrollbar-track {
     background: var(--bg-color);
 }
 
 ::-webkit-scrollbar-thumb {
     background: #201c29;
-    height: 4px;
     border-radius: 8px;
 }
 
