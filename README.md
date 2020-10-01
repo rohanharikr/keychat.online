@@ -1,14 +1,14 @@
 <div align="center">
   <h5>When I wrote this, only God and I understood what I was doing. Now, only God knows.</a></h5>
   <br>
-  <a href="https://chatsecure.online"><img src="client/static/logo-192.png" alt="chatsecure.online logo" height="128"></a>
+  <a href="https://chatsecure.online"><img src="client/static/logo-512.png" alt="chatsecure.online logo" height="128"></a>
   <br><br>
   <p>
     <b>chatsecure.online</b>
     <p>Start a free secure and private chat with anyone without logging in or signing up
   </p>
 </div>
-
+<br>
 <div align="center">
   <a href="https://chatsecure.online"><img src="client/static/screenshot.png" alt="screenshot" width="100%"></a>
 </div>
