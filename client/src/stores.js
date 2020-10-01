@@ -2,6 +2,10 @@ import { writable } from 'svelte/store';
 
 export const featuresData = writable(
     [{
+            title: 'Public key encrypted',
+            content: 'Messages are encrypted using elliptic curve Diffie-Hellman key exchange; not connected to a database'
+        },
+        {
             title: 'Open Source',
             content: 'Open sourced under the MIT license, a permissive free software license'
         },
@@ -9,20 +13,16 @@ export const featuresData = writable(
             title: 'No login or signup',
             content: 'Easy as sharing a secret code with someone or starting a new session'
         },
-        {
-            title: 'Secure with NoDB',
-            content: 'All messages are encrypted by AES and nothing is stored in a database'
-        }
     ]
 );
 
 export const working = writable([
-    'On starting a new chat, the client sends a secret key to the socket.io server',
-    'The server starts a private session based on the key sent',
-    'The original client listens for messages received on the private session',
-    'User 2 enters the secret key to establish a connection with the socket.io on the same session',
-    'All messages sent are encrypted (AES) using a key unique to the created session.',
-    'Session is locked from interference or listening after another user joins',
+    'On starting a new chat, the client sends a room key and public key to the socket.io server',
+    'The server starts a private session based on the room key',
+    'On entering a valid room key, a connection is established with the socket.io server',
+    'A public key is then generated and broadcasted to the listener of the same session',
+    'All messages are encypted / decrypted using elliptic curve Diffie-Hellman key exchange',
+    'Locked from interference or listening when a total of two users are present in a session',
     'Since there is not persisent data, if you reload or leave & join the same session, the history won\'t be present',
     'Once both the users leave a session, the session will be destroyed'
 ]);

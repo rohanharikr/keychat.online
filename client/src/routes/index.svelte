@@ -130,7 +130,7 @@
 		const keys = nacl.box.keyPair();
 		userPublicKey = keys.publicKey;
 		userPublicKey = naclUtil.encodeBase64(userPublicKey);
-		userPrivateKey = keys.secretKey;
+		console.log(`YOUR PUBLIC KEY BASE64: ${userPublicKey}`);
 		nonce = naclUtil.encodeBase64(nacl.randomBytes(24));
 
 		secretKey = secretKeyGenerator();
@@ -151,6 +151,7 @@
 		const keys = nacl.box.keyPair();
 		anonPublicKey = keys.publicKey;
 		anonPublicKey = naclUtil.encodeBase64(anonPublicKey);
+		console.log(`YOUR PUBLIC KEY BASE64: ${anonPublicKey}`);
 		anonPrivateKey = keys.secretKey;
 
 		isLoadingJoin = true;

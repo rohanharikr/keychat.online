@@ -3,10 +3,10 @@
 		<h1>We don’t store any chat histories. Ever.</h1>
 		<div class="sessionDeleted flex">
 			<img src="session-deleted.svg" alt="session deleted">
-			<p style="margin-right: 2rem;">All sessions are deleted after both the parties exist the room</p>
+			<p style="margin-right: 2rem;">Since there is no persisdent data, sessions are deleted after both the parties exist the room</p>
 		</div>
 		<div class="noInterruptions flex">
-			<p style="margin-left: 2rem;">No intrusions or interruptions. Chat is locked once two people join a room</p>
+			<p style="margin-left: 2rem;">Messages are encrypted using asymmetric keys; tamper and intercept proof and session is locked once two people join a room</p>
 			<img src="nointerruptions.svg" alt="no interruptions">
 		</div>
 		<div class="sessionDeleted flex modifier">
