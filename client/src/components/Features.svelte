@@ -21,7 +21,7 @@
 	}
 
 	.featuresCard{
-		background: #1F1E22;
+		background: var(--grey);
 		width: 18rem;
 		height: 12rem;
 		padding: 2rem;

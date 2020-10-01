@@ -5,11 +5,11 @@
 			<li>&#169; 2020 MIT License</li>
 			<a href="https://www.twitter.com/rohanharikr"><li>made by rohanharikr</li></a>
 			<li>123 happy souls</li>
-			<li>commit 712j1</li>
+			<li>illustrations from growwwkit</li>
 			<a href="https://github.com/rohanharikr/anonchat">
 				<li class="link"><img src="github.svg" alt="github logo" class="footericon"></li>
 			</a>
-			<!-- <li>hosted on heroku</li> -->
+			<li>commit 712j1</li>
 		</ul>
 		<img src="chatsecureonline.svg" alt="logo" class="mobileLogo">
 	</div>
@@ -18,7 +18,7 @@
 <style>
 	footer{
 		margin-top: 4rem;
-		background: #1F1E22;
+		background: var(--grey);
 		height: 6rem;
 		width: 100%;
 	}

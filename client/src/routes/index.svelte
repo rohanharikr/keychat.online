@@ -53,19 +53,6 @@
 		anonPrivateKey,
 		nonce;
 
-	 $: if (chatmessage === "/" || chatmessage[chatmessage.length-1] == "/"){
-		chatOptions = true;	 	
-	 } else{
-	 	chatOptions = false;
-	 }
-
- 	// $: if(!network && isChatBox){
-		// showNotification('You are offline', 'red');
- 	// }
- 	// else if (network && isChatBox && messages.length){
- 	// 	showNotification('You are back online', 'green');
- 	// }
-
 	//connect to socket.io server
 	if(!socket){
 	    socket = io(':3001')
@@ -130,6 +117,7 @@
 		const keys = nacl.box.keyPair();
 		userPublicKey = keys.publicKey;
 		userPublicKey = naclUtil.encodeBase64(userPublicKey);
+		userPrivateKey = keys.secretKey;
 		console.log(`YOUR PUBLIC KEY BASE64: ${userPublicKey}`);
 		nonce = naclUtil.encodeBase64(nacl.randomBytes(24));
 
@@ -213,9 +201,8 @@
   			nonce,
   			anonPublicKey,
   			userPrivateKey)
+  					
 		}
-
-		console.log(box);
 		box = naclUtil.encodeBase64(box);
 		socket.emit('message', box);
 		chatmessage = '';
@@ -248,6 +235,20 @@
 		const blob = await new Blob([data], {type: "text/plain;charset=utf-8"});
 		FileSaver.saveAs(blob, `${secretKey || joinKey}.txt`);
 	}
+
+
+	 $: if (chatmessage === "/" || chatmessage[chatmessage.length-1] == "/"){
+		chatOptions = true;	 	
+	 } else{
+	 	chatOptions = false;
+	 }
+
+ 	// $: if(!network && isChatBox){
+		// showNotification('You are offline', 'red');
+ 	// }
+ 	// else if (network && isChatBox && messages.length){
+ 	// 	showNotification('You are back online', 'green');
+ 	// }
 
 	function checkEnterPress(event){
 		let key;
@@ -282,6 +283,9 @@
 	}
 </script>
 
+<svelte:head>
+	<link rel="icon" type="image/png" href={!isChatBox ? "offlinefav.svg" : "onlinefav.svg"}>
+</svelte:head>
 <!-- causing a lot of bugs, will fix -->
 <!-- <svelte:window on:keydown={checkEnterPress}/> -->
 <div class="main-container" class:modifier={isChatBox}>
@@ -297,7 +301,7 @@
 					{notificationMessage.msg}
 				</div>
 			{/if}
-			<button on:click={joinSession} style="background: #1f1e22" disabled={!joinKey.length} class:focus={joinKey.length}>
+			<button on:click={joinSession} style="background: var(--grey)" disabled={!joinKey.length} class:focus={joinKey.length}>
 				{#if !isLoadingJoin}
 					Enter with secret code
 				{:else}
@@ -371,7 +375,7 @@
 					</ul>
 				{/if}		
 				{#if !isChatLocked}	
-					<div class="loadingChat" transition:slide data-tooltip="Messages sent now are not received by the end user">
+					<div class="loadingChat" transition:slide data-tooltip="Messages sent now are not received by the end use">
 						<img src="loader.gif" alt="loading animation" class="loading">
 						<p>waiting for a user to join...</p>
 					</div>
@@ -381,7 +385,7 @@
 					<button on:click={sendMessage} disabled={!chatmessage.length || chatmessage === "/"}><img src="send.png" alt="send icon" class="sendIcon">Send</button>
 				</div>
 				{#if !chatOptions}
-					<p class="chatOptionsHelper" transition:slide>type '/' for chat options</p>
+					<p class="chatOptionsHelper" transition:slide>type '/' for chat options<span style="margin-left:0.8rem;" class="onlyDesktop">open console for your public key</span></p>
 				{/if}
 				<img src="chatsecureoffline.svg" alt="logo" class="chatBoxLogo">
 			</div>
@@ -454,9 +458,9 @@
 		padding: 1.2rem;
 		height: auto;
 		background: red;
-		background: #1F1E22;
+		background: var(--grey);
 		border-radius: 0.2rem;
-		border: 1px solid #35363B;
+		border: 1px solid var(--border-grey);
 		display: flex;
 		flex-direction: column;
 	}
@@ -551,6 +555,10 @@
 		width: 28%;
 	}
 
+	.onlyDesktop{
+		display: inline-block;
+	}
+
 	.messageBox{
 		font-size: 1rem;
 		text-align: left;
@@ -604,7 +612,7 @@
 		width: 0.6rem;
 		height: 0.6rem;
 		border-radius: 50%;
-		background: #04E887;
+		background: var(--green);
 		margin-right: 0.4rem;
 	}
 
@@ -664,7 +672,7 @@
 	}
 
 	.notification{
-	    background: #04e887;
+	    background: var(--green);
 	    display: inline-block;
 	    padding: 0.2rem 0.8rem;
 	    border-radius: 4rem;
@@ -731,6 +739,10 @@
 		}
 
 		.mobileChatActive{
+			display: none;
+		}
+
+		.onlyDesktop{
 			display: none;
 		}
 

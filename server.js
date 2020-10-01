@@ -44,6 +44,7 @@ io.on('connection', socket => {
 
     //message to room
     socket.on('message', message => {
+        console.log(message);
         socket.broadcast.to(secretRoom).emit('sendMessage', message);
     });
 
