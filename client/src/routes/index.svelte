@@ -14,6 +14,7 @@
 	import copy from 'copy-to-clipboard';
 	import AnimalAvatar from 'animal-avatars.js';
 	import getTime from '../utils/getTime';
+	import notificationSound from '../utils/notificationSound';
 	import FileSaver from 'file-saver';
 	import InternetConnection from "svelte-internet-connection";
 	import nacl from 'tweetnacl';
@@ -65,14 +66,17 @@
 	    		botMessage = `${anonName} has joined the chat`;
 	    		isChatLocked = true;
 	    		showNotification(botMessage, 'green');
+	    		notificationSound("./sounds/enterleave.mp3");
 	    	} else if (joinedSession){
 	    		botMessage = `${userName} has left the chat`;
 				isChatLocked = false
     			showNotification(botMessage, 'red');
+    			notificationSound("./sounds/enterleave.mp3");
 	    	} else{
 	    		botMessage = `${anonName} has left the chat`;
 				isChatLocked = false
     			showNotification(botMessage, 'red');
+    			notificationSound("./sounds/enterleave.mp3");
 	    	}
 	    });
     }
@@ -101,6 +105,7 @@
 		}
 		messages = [...messages, utf8];
     	updateScroll();
+    	notificationSound("./sounds/message.mp3");
     });
 
 	function showNotification(msg, color){
