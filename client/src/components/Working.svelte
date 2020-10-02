@@ -17,7 +17,7 @@
 	ul li{
 		display: flex;
 		align-items: center;
-		font-weight: 200;
+		font-weight: 400;
 		margin-bottom: 4rem;
 	}
 
@@ -30,17 +30,17 @@
 		background: #3F8BFE;
 		border-radius: 50%;
 		margin-right: 2rem;
-		font-weight: 300;
+		font-weight:600;
 
 	}
 
-	#how .container{
-		width: 80rem;
+	.container{
+		max-width: 64rem;
 	}
 
 	#how ul{
-		margin: 4rem 8rem;
-		margin-top: 6em;
+		/*margin: 4rem 8rem;*/
+		margin-top: 4em;
 		columns: 2;
 		column-gap: 6rem;
 		margin-bottom: 0;

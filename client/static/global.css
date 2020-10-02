@@ -1,4 +1,4 @@
-@import url('typeface.css');
+@import url('https://fonts.googleapis.com/css2?family=Overpass:wght@300;400;600&display=swap');
 
 :root {
     --bg-color: #141318;
@@ -21,7 +21,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: HelveticaNeue, Helvetica, Roboto, sans-serif;
+    font-family: 'Overpass', sans-serif;
     color: #EEE;
 }
 
@@ -40,7 +40,7 @@ li {
 
 .container {
     margin: auto;
-    width: 60rem;
+    max-width: 60rem;
 }
 
 .flex {
@@ -52,7 +52,7 @@ li {
 #highlight h1,
 #how h1 {
     font-size: 1.4rem;
-    font-weight: 300;
+    font-weight: 600;
     margin: auto;
     text-align: center;
 }
@@ -65,7 +65,7 @@ input {
     border-radius: 0.4rem;
     margin-bottom: 1rem;
     font-size: 1.6rem;
-    font-weight: 100;
+    font-weight: 300;
 }
 
 input:focus {
@@ -84,7 +84,7 @@ button {
     border: none;
     border-radius: 0.4rem;
     font-size: 1rem;
-    font-weight: 300;
+    font-weight: 600;
     cursor: pointer;
     transition: 0.3s;
     display: flex;
@@ -105,6 +105,6 @@ button:focus {
     #highlight h1,
     #how h1 {
         font-size: 1rem;
-        font-weight: 300;
+        font-weight: 600;
     }
 }

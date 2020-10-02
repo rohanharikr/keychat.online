@@ -23,13 +23,15 @@
 		<img src="chatsecureonline.svg" alt="logo" class="logo">
 		<ul>
 			<li>&#169; 2020 MIT License</li>
-			<a href="https://www.twitter.com/rohanharikr"><li>made by rohanharikr</li></a>
+			<li><a href="https://www.twitter.com/rohanharikr">made by rohanharikr</a></li>
 			<li>{hits || '...'} happy souls</li>
-			<a href="https://growwwkit.com/"><li>illustrations from growwwkit</li></a>
-			<a href="https://github.com/rohanharikr/chatsecure.online">
-				<li class="link" style="margin-bottom: 0.2rem;"><img src="github.svg" alt="github logo" class="footericon"></li>
-			</a>
+			<li><a href="https://growwwkit.com/">illustrations from growwwkit</a></li>
 			<li>commit {id || '...'}</li>
+			<li class="link" style="margin-bottom: 0.2rem;">
+				<a href="https://github.com/rohanharikr/chatsecure.online">
+					<img src="github.svg" alt="github logo" class="footericon">
+				</a>
+			</li>
 		</ul>
 		<img src="chatsecureonline.svg" alt="logo" class="mobileLogo">
 	</div>
@@ -44,11 +46,12 @@
 	}
 
 	.footerContainer{
-		width: 71%;
+		padding: 1.2rem;
 		height: 100%;
 		margin: auto;
 		display: flex;
 		align-items: center;
+		justify-content: center;
 	}
 
 	.footericon{
@@ -69,9 +72,9 @@
 
 	ul{
 		columns: 3;
-		font-weight: 200;
+		font-weight: 400;
 		font-size: 0.8rem;
-		margin-left: 8rem;
+		margin-left: 12rem;
 		column-gap: 6rem;
 		opacity: 0.8;
 	}
@@ -99,6 +102,7 @@
 
 		.footerContainer{
 			width: auto;
+			padding: 0;
 		}
 
 		ul{

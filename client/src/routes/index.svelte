@@ -384,7 +384,7 @@
 				{/if}
 				<div class="messageBoxContainer flex" in:fade={{duration: 500}}>
 					<input class="messageBox" bind:value={chatmessage} placeholder="type your message here" bind:this={inputRef}  on:keydown={checkEnterPress} disabled={!isChatLocked} />
-					<button on:click={sendMessage} disabled={!chatmessage.length || chatmessage === "/"}><img src="send.png" alt="send icon" class="sendIcon">Send</button>
+					<button on:click={sendMessage} disabled={!chatmessage.length || chatmessage === "/"}><img src="send.png" alt="send icon" class="sendIcon"><div style="margin-top: 0.2rem;">Send</div></button>
 				</div>
 				{#if !chatOptions}
 					<p class="chatOptionsHelper" transition:slide>type '/' for chat options<span style="margin-left:0.8rem;" class="onlyDesktop">open console for your public key</span></p>
@@ -497,7 +497,7 @@
 	.loadingChat p{
 		font-size: 0.8rem;
 		margin-left: 0.3rem;
-		font-weight: 200;
+		font-weight: 400;
 	}
 
 	.loading{
@@ -523,7 +523,7 @@
 	}
 
 	.warning{
-		font-weight: 100;
+		font-weight: 300;
 		text-align: center;
 		font-size: 0.7rem;
 		margin-top: 1.2rem;
@@ -535,7 +535,7 @@
 	}
 
 	.timeStamp{
-		font-weight: 100;
+		font-weight: 300;
 		font-size: 0.6rem;
 		margin-top: -0.8em;
 		margin-bottom: 1.8rem;
@@ -593,14 +593,14 @@
 		padding: 0 0.4rem;
 		display: inline-block;
 		border-radius: 0.2rem;
-		font-weight: 200;
+		font-weight: 400;
 		display: flex;
 		align-items: center;
 	}
 
 	.sessionInfo ul{
 		display: flex;
-		font-weight: 200;
+		font-weight: 400;
 		font-size: 0.8rem;
 	}
 
@@ -627,7 +627,7 @@
 
 	.chatOptions li{
 		list-style: none;
-		font-weight: 100;
+		font-weight: 300;
 		font-size: 1rem;
 		background: #242424;
 		padding: 0.6rem 1rem;
@@ -644,7 +644,7 @@
 	}
 
 	.chatOptionsHelper{
-		font-weight: 300;
+		font-weight: 600;
 		margin-left: 1rem;
 		margin-top: 0.8rem;
 		opacity: 0.6;
@@ -657,7 +657,7 @@
 		padding: 0.6rem;
 		border-radius: 1rem 1rem 0 1rem;
 		font-size: 0.8rem;
-		font-weight: 200;
+		font-weight: 400;
 		margin-left: auto;
 		margin-bottom: 0.8rem;
 	}
@@ -668,7 +668,7 @@
 		padding: 0.6rem;
 		border-radius: 1rem 1rem 1rem 0;
 		font-size: 0.8rem;
-		font-weight: 200;
+		font-weight: 400;
 		margin-right: auto;
 		margin-bottom: 0.8rem;
 	}
@@ -680,7 +680,7 @@
 	    border-radius: 4rem;
 	    color: black;
 	    font-size: 0.8rem;
-	    font-weight: 300;
+	    font-weight: 600;
 	    position: absolute;
 	    left: 0;
 	    right: 0;
@@ -699,7 +699,7 @@
 	.error{
 		text-align: center;
 		margin-bottom: 1rem;
-		font-weight: 200;
+		font-weight: 400;
 		font-size: 1rem;
 		color: red;
 	}

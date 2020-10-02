@@ -30,13 +30,13 @@
 
 	.featuresCard h1{
 		font-size: 1.2rem;
-		font-weight: 300;
+		font-weight: 600;
 	}
 
 	.featuresCard p{
 		margin-top: 1rem;
 		font-size: 1rem;
-		font-weight: 100;
+		font-weight: 300;
 		opacity: 0.8;
 	}
 

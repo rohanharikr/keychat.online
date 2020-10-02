@@ -22,14 +22,14 @@
 	}
 
 	.sessionDeleted, .noInterruptions{
-		margin: 6rem auto;
+		margin: 4rem auto;
 		width: 70%;
 	}
 
 	.sessionDeleted p{
 		text-align: right;
 		width: 20rem;
-		font-weight: 200;
+		font-weight: 400;
 		margin-bottom: 10rem;
 	}
 
@@ -40,7 +40,7 @@
 	.noInterruptions p{
 		text-align: left;
 		width: 20rem;
-		font-weight: 200;
+		font-weight: 400;
 	}
 
 	.sessionDeleted img, .noInterruptions img{
