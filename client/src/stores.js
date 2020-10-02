@@ -3,7 +3,7 @@ import { writable } from 'svelte/store';
 export const featuresData = writable(
     [{
             title: 'Public key encrypted',
-            content: 'Messages are encrypted using elliptic curve Diffie-Hellman key exchange; not connected to a database'
+            content: 'Messages are encrypted using elliptic curve Diffie-Hellman key exchange'
         },
         {
             title: 'Open Source',

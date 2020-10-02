@@ -62,13 +62,17 @@
 	    	let botMessage;
 	    	//status 1 = joined, 0 = disconnected
 	    	if(status === 1){
-	    		botMessage = `${userName} has joined the chat`;
+	    		botMessage = `${anonName} has joined the chat`;
 	    		isChatLocked = true;
 	    		showNotification(botMessage, 'green');
-	    	} else{
+	    	} else if (joinedSession){
 	    		botMessage = `${userName} has left the chat`;
-	    		isChatLocked = false
-	    		showNotification(botMessage, 'red');
+				isChatLocked = false
+    			showNotification(botMessage, 'red');
+	    	} else{
+	    		botMessage = `${anonName} has left the chat`;
+				isChatLocked = false
+    			showNotification(botMessage, 'red');
 	    	}
 	    });
     }
