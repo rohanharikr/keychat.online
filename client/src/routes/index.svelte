@@ -725,6 +725,10 @@
 	}
 
 	.chatOptions{
+		position: absolute;
+		left: 1rem;
+		right: 1rem;
+		z-index: 1;
 		margin-bottom: 0.8rem;
 		display: flex;
 		align-items: center;
