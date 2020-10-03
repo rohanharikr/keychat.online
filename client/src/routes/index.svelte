@@ -80,6 +80,7 @@
 			emailLink = `mailto:someone@yoursite.com?body=${secretLink}`
 		}
 
+		window.history.replaceState({}, document.title, "/");
 		//need to figure out how to send links in imessages and facebook
 
 		// const appleDevice = device();
@@ -191,7 +192,7 @@
 		const keys = nacl.box.keyPair();
 		anonPublicKey = keys.publicKey;
 		anonPublicKey = naclUtil.encodeBase64(anonPublicKey);
-		console.log(`YOUR PUBLIC KEY BASE64: ${anonPublicKey}`);
+		const base64PublicKey = anonPublicKey;
 		anonPrivateKey = keys.secretKey;
 
 		isLoadingJoin = true;
@@ -206,12 +207,18 @@
 				isChatBox = true;
 				joinedSession = true;
 				isChatLocked = true;
-
+				console.log(`YOUR PUBLIC KEY BASE64: ${base64PublicKey}`);
 			} else{
 				isLoadingJoin = false;
 				showNotification('Session does not exist', 'red');
+				sessionInProgress = false;
 			}
 		}, 1500)
+
+		secretLink = `https://chatsecure.online/?sc=${secretKey || joinKey}`;
+		whatsappLink = `https://wa.me/?text=${secretLink}`;
+		telegramLink = `https://t.me/share?url=${secretLink}`;
+		emailLink = `mailto:someone@yoursite.com?body=${secretLink}`
 	}
 
 	function closeSession(){
@@ -399,40 +406,40 @@
 						</li>
 					</ul>
 				</div>
-				<div class="chatArea" in:fade={{duration: 500}} bind:this={chatArea}>
-					{#if notification}
-						<div class="notification" in:fly="{{y: -20, duration: 200}}" out:fly="{{ y: -20, duration: 200 }}" class:red={notificationMessage.color === 'red'}>
-							{notificationMessage.msg}
+				{#if shareOptions}
+					<div class="shareOptions" in:fly="{{y: -20, duration: 100}}" out:fly="{{ y: -20, duration: 100 }}">
+						<h5 style="display: inline-block;">Share link</h5>
+						<img src="close.svg" alt="close icon" class="closeIcon" on:click={()=>shareOptions = false}>
+						<div class="secretKey" style="padding: 0 0.4rem;">
+							<div class="sharelink" data-tooltip="Share this link to start chatting">{secretLink}</div>
+							<img src={secretLinkCopied ? "copied.svg" : "copy.svg"} alt="copied icon" class="copyIcon" on:click={copySecretLink} style="margin-left: auto;">
 						</div>
-					{/if}
-					{#if shareOptions}
-						<div class="shareOptions" in:fly="{{y: -20, duration: 100}}" out:fly="{{ y: -20, duration: 100 }}">
-							<h5 style="display: inline-block;">Share link</h5>
-							<img src="close.svg" alt="close icon" class="closeIcon" on:click={()=>shareOptions = false}>
-							<div class="secretKey" style="padding: 0 0.4rem;">
-								<div class="sharelink" data-tooltip="Share this link to start chatting">{secretLink}</div>
-								<img src={secretLinkCopied ? "copied.svg" : "copy.svg"} alt="copied icon" class="copyIcon" on:click={copySecretLink} style="margin-left: auto;">
-							</div>
-							<div>
-								<a href={whatsappLink} target="_blank">
-									<img src="whatsapp.svg" title="WhatsApp" alt="whatsapp icon" class="chatOption">
+						<div>
+							<a href={whatsappLink} target="_blank">
+								<img src="whatsapp.svg" title="WhatsApp" alt="whatsapp icon" class="chatOption">
+							</a>
+							<a href={telegramLink} target="_blank">
+								<img src="telegram.svg" title="Telegram" alt="Telegram" class="chatOption"></a>
+							{#if appleShare}
+								<a href={imessageLink} target="_blank">
+									<img src="imessage.svg" title="iMessage" alt="iMessage" class="chatOption">
 								</a>
-								<a href={telegramLink} target="_blank">
-									<img src="telegram.svg" title="Telegram" alt="Telegram" class="chatOption"></a>
-								{#if appleShare}
-									<a href={imessageLink} target="_blank">
-										<img src="imessage.svg" title="iMessage" alt="iMessage" class="chatOption">
-									</a>
-								{/if}
+							{/if}
 <!-- 								<a href={messengerLink} target="_blank">
-									<img src="messenger.svg" title="Facebook Messenger" alt="messenger icon icon" class="chatOption">
-								</a> -->
-								<a href={emailLink} target="_blank">
-									<img src="email.svg" title="Email" alt="email icon" class="chatOption">
-								</a>
-							</div>
+								<img src="messenger.svg" title="Facebook Messenger" alt="messenger icon icon" class="chatOption">
+							</a> -->
+							<a href={emailLink} target="_blank">
+								<img src="email.svg" title="Email" alt="email icon" class="chatOption">
+							</a>
 						</div>
-					{/if}
+					</div>
+				{/if}
+				{#if notification}
+					<div class="notification" in:fly="{{y: -20, duration: 200}}" out:fly="{{ y: -20, duration: 200 }}" class:red={notificationMessage.color === 'red'}>
+						{notificationMessage.msg}
+					</div>
+				{/if}
+				<div class="chatArea" in:fade={{duration: 500}} bind:this={chatArea}>
 					{#each messages as {way, msg, time}}
 						{#if way === 'out'}
 							<div class="chatBubbleContainer" in:fly="{{y: 10, duration: 300}}">
@@ -565,6 +572,7 @@
 	}
 
 	.chatBox{
+		position: relative;
 		height: auto;
 	}
 
@@ -782,6 +790,9 @@
 		border-radius: 0.4rem;
 		padding: 1rem;
 		text-align: left;
+		max-width: 20rem;
+		margin: auto;
+		top: 6.6rem;
 	}
 
 	.chatBubbleGrey{
@@ -809,6 +820,7 @@
 	    text-align: center;
 	    margin: 0 4rem;
 	    z-index: 99;
+	    top: 6.6rem;
 	}
 
 	.loaderAnim{
