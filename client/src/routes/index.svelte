@@ -725,10 +725,6 @@
 	}
 
 	.chatOptions{
-		position: absolute;
-		left: 1rem;
-		right: 1rem;
-		z-index: 1;
 		margin-bottom: 0.8rem;
 		display: flex;
 		align-items: center;
@@ -778,6 +774,10 @@
 	}
 
 	.shareOptions{
+		position: absolute;
+		left: 1rem;
+		right: 1rem;
+		z-index: 1;
 		background: var(--grey);
 		border-radius: 0.4rem;
 		padding: 1rem;
@@ -808,6 +808,7 @@
 	    right: 0;
 	    text-align: center;
 	    margin: 0 4rem;
+	    z-index: 99;
 	}
 
 	.loaderAnim{
