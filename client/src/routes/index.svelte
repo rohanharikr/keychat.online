@@ -15,13 +15,16 @@
 	import AnimalAvatar from 'animal-avatars.js';
 	import getTime from '../utils/getTime';
 	import notificationSound from '../utils/notificationSound';
+	import device from '../utils/device';
 	import FileSaver from 'file-saver';
 	import InternetConnection from "svelte-internet-connection";
 	import nacl from 'tweetnacl';
 	import naclUtil from 'tweetnacl-util';
+	import { onMount } from 'svelte';
 
  	let socket,
 		secretKey,
+		secretLink,
 		isChatBox = false,
 		joinKey = '',
 		joinedSession = false,
@@ -29,7 +32,8 @@
 		notification = false,
 		messages = [],
 		notificationMessage,
-		isCopied,
+		secretKeyCopied = false,
+		secretLinkCopied = false,
 		isChatLocked = false,
 		inputRef,
 		sessionInProgress = false,
@@ -41,6 +45,8 @@
 		network = true,
 		chatArea,
 		encKey,
+		appleShare = false,
+		shareOptions = false,
 		chatOptions = false;
 
 	let userName,
@@ -54,6 +60,36 @@
 		anonPrivateKey,
 		nonce;
 
+	let whatsappLink,
+		telegramLink,
+		imessageLink,
+		messengerLink,
+		emailLink;
+
+	const timeoutNotification = 2000;
+
+	onMount( async() => {
+		const urlParams = new URLSearchParams(window.location.search);
+		const param = urlParams.get('sc');
+		if(param){
+			joinKey = param;
+			joinSession();
+			secretLink = `https://chatsecure.online/?sc=${param}`;
+			whatsappLink = `https://wa.me/?text=${secretLink}`;
+			telegramLink = `https://t.me/share?url=${secretLink}`;
+			emailLink = `mailto:someone@yoursite.com?body=${secretLink}`
+		}
+
+		//need to figure out how to send links in imessages and facebook
+
+		// const appleDevice = device();
+
+		// if(appleDevice){
+		// 	appleShare = true;
+
+		// }
+	});
+
 	//connect to socket.io server
 	if(!socket){
 	    socket = io(':3001')
@@ -63,6 +99,7 @@
 	    	let botMessage;
 	    	//status 1 = joined, 0 = disconnected
 	    	if(status === 1){
+	    		shareOptions = false;
 	    		botMessage = `${anonName} has joined the chat`;
 	    		isChatLocked = true;
 	    		showNotification(botMessage, 'green');
@@ -111,7 +148,7 @@
 	function showNotification(msg, color){
 		notification = true;
 		notificationMessage = {msg, color};
-		setTimeout(() => notification = false, 2000);
+		setTimeout(() => notification = false, timeoutNotification);
 	}
 
 	socket.on('typing', () => {
@@ -142,6 +179,12 @@
 			isLoadingStart = false;
 			isChatBox = true
 		}, 300) //ux
+
+		shareOptions = true;
+		secretLink = `https://chatsecure.online/?sc=${secretKey || joinKey}`;
+		whatsappLink = `https://wa.me/?text=${secretLink}`;
+		telegramLink = `https://t.me/share?url=${secretLink}`;
+		emailLink = `mailto:someone@yoursite.com?body=${secretLink}`
 	}
 
 	function joinSession(){
@@ -222,14 +265,21 @@
 	}
 
 	function copySecretKey(){
-		isCopied = !isCopied;
+		secretKeyCopied = !secretKeyCopied;
 		if (secretKey){
 			copy(secretKey)
 		} else {
 			copy(joinKey)
 		} 
 		showNotification("Secret Key copied", 'green')
-		setTimeout(() => isCopied = false, 1250);
+		setTimeout(() => secretKeyCopied = false, timeoutNotification);
+	}
+
+	function copySecretLink(){
+		secretLinkCopied = !secretLinkCopied;
+		copy(secretLink)
+		showNotification("Secret Link copied", 'green')
+		setTimeout(() => secretLinkCopied = false, timeoutNotification);
 	}
 
 	//local vars
@@ -245,6 +295,7 @@
 		const data = JSON.stringify(messages);
 		const blob = await new Blob([data], {type: "text/plain;charset=utf-8"});
 		FileSaver.saveAs(blob, `${secretKey || joinKey}.txt`);
+		chatOptions = false;
 	}
 
 
@@ -301,7 +352,9 @@
 <!-- <svelte:window on:keydown={checkEnterPress}/> -->
 <div class="main-container" class:modifier={isChatBox}>
 <div class:modifier--displayNone={isChatBox}>
-	<Header src={isChatBox ? "chatsecureonline.svg" : "chatsecureoffline.svg"} />
+	<a href="https://chatsecure.online">
+		<Header src={isChatBox ? "chatsecureonline.svg" : "chatsecureoffline.svg"} />
+	</a>
 </div>
 <main class:main--modifier={isChatBox}>
 	<div class="enterSessionCard" class:enterSessionCard--modifier={isChatBox}>
@@ -326,9 +379,12 @@
 			<div class="chatBox" transition:slide>
 				<div class="sessionInfo flex" in:fade={{duration: 500}}>
 					<div class="secretKey">
-						<!-- <img src="secretkey.svg" alt="secret key" class="secretKeyIcon"> -->
-						<div data-tooltip="Share this secret code with anyone to start chatting">{secretKey || joinKey}</div>
-						<img src={isCopied ? "copied.svg" : "copy.svg"} alt="copied icon" class="copyIcon" on:click={copySecretKey}>
+						<div data-tooltip="Share this secret code to start chatting">{secretKey || joinKey}</div>
+						<div class="flex">
+							<img src={secretKeyCopied ? "copied.svg" : "copy.svg"} alt="copied icon" class="copyIcon" on:click={copySecretKey}>
+							<div style="width: 3px; height: 3px; background-color: #404040; border-radius: 50%"></div>
+							<img src={!shareOptions ? "share.svg" : "shareactive.svg"} alt="share icon" class="copyIcon" on:click={()=>{shareOptions = !shareOptions}}>
+						</div>
 					</div>
 					<ul>
 						<li data-tooltip="Locked once another user enters the chat" style="cursor: pointer;">
@@ -347,6 +403,34 @@
 					{#if notification}
 						<div class="notification" in:fly="{{y: -20, duration: 200}}" out:fly="{{ y: -20, duration: 200 }}" class:red={notificationMessage.color === 'red'}>
 							{notificationMessage.msg}
+						</div>
+					{/if}
+					{#if shareOptions}
+						<div class="shareOptions" in:fly="{{y: -20, duration: 100}}" out:fly="{{ y: -20, duration: 100 }}">
+							<h5 style="display: inline-block;">Share link</h5>
+							<img src="close.svg" alt="close icon" class="closeIcon" on:click={()=>shareOptions = false}>
+							<div class="secretKey" style="padding: 0 0.4rem;">
+								<div class="sharelink" data-tooltip="Share this link to start chatting">{secretLink}</div>
+								<img src={secretLinkCopied ? "copied.svg" : "copy.svg"} alt="copied icon" class="copyIcon" on:click={copySecretLink} style="margin-left: auto;">
+							</div>
+							<div>
+								<a href={whatsappLink} target="_blank">
+									<img src="whatsapp.svg" title="WhatsApp" alt="whatsapp icon" class="chatOption">
+								</a>
+								<a href={telegramLink} target="_blank">
+									<img src="telegram.svg" title="Telegram" alt="Telegram" class="chatOption"></a>
+								{#if appleShare}
+									<a href={imessageLink} target="_blank">
+										<img src="imessage.svg" title="iMessage" alt="iMessage" class="chatOption">
+									</a>
+								{/if}
+<!-- 								<a href={messengerLink} target="_blank">
+									<img src="messenger.svg" title="Facebook Messenger" alt="messenger icon icon" class="chatOption">
+								</a> -->
+								<a href={emailLink} target="_blank">
+									<img src="email.svg" title="Email" alt="email icon" class="chatOption">
+								</a>
+							</div>
 						</div>
 					{/if}
 					{#each messages as {way, msg, time}}
@@ -381,7 +465,7 @@
 				{#if chatOptions}
 					<ul class="chatOptions" transition:slide>
 						<li on:click={closeSession}><img src="close.png" alt="close icon"><div>close</div></li>
-						<li on:click={()=>{messages = []}}><img src="clear.png" alt="clear icon"><div>clear</div></li>
+						<li on:click={()=>{messages = []; chatOptions = false;}}><img src="clear.png" alt="clear icon"><div>clear</div></li>
 						<li on:click={saveHistory}><img src="download.png" alt="download icon"><div>download</div></li>
 					</ul>
 				{/if}		
@@ -539,6 +623,12 @@
 		opacity: 0.8;
 	}
 
+	.sharelink{
+		font-size: 0.8rem;
+		opacity: 0.8;
+		margin: 0 !important;
+	}
+
 	.messageBoxContainer{
 		display: flex;
 	}
@@ -596,15 +686,22 @@
 		margin-bottom: 1rem;
 	}
 
+	.closeIcon{
+		float: right;
+		height: 0.8rem;
+		opacity: 0.8;
+	}
+
 	.secretKey{
 		background: #181818;
 		height: 2.8rem;
-		padding: 0 0.4rem;
+		padding: 0 0.2rem;
 		display: inline-block;
 		border-radius: 0.2rem;
 		font-weight: 400;
 		display: flex;
 		align-items: center;
+		margin: 0.8rem 0;
 	}
 
 	.sessionInfo ul{
@@ -616,7 +713,7 @@
 	.sessionInfo li{
 		display: flex;
 		align-items: center;
-		margin-left: 1rem;
+		margin-left: 0.6rem;
 	}
 
 	.status{
@@ -632,6 +729,11 @@
 		display: flex;
 		align-items: center;
 		border-radius: 0.2rem;
+	}
+
+	.chatOption{
+	 	height: 2.6rem;
+	 	margin-right: 0.2rem;
 	}
 
 	.chatOptions li{
@@ -669,6 +771,13 @@
 		font-weight: 400;
 		margin-left: auto;
 		margin-bottom: 0.8rem;
+	}
+
+	.shareOptions{
+		background: var(--grey);
+		border-radius: 0.4rem;
+		padding: 1rem;
+		text-align: left;
 	}
 
 	.chatBubbleGrey{
@@ -714,7 +823,7 @@
 	}
 
 	.secretKey div{
-		margin: 0 1rem;
+		margin: 0.4rem;
 	}
 
 	.red{

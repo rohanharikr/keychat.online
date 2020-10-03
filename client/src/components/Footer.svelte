@@ -9,11 +9,11 @@
   			hits = result.value
 		});
 
-		await fetch('https://api.github.com/repos/rohanharikr/chatsecure.online/commits')
-			.then((response) => response.json())
-			.then((data) => {
-			id = data[0].sha.slice(0, 7)
-		})
+		// await fetch('https://api.github.com/repos/rohanharikr/chatsecure.online/commits')
+		// 	.then((response) => response.json())
+		// 	.then((data) => {
+		// 	id = data[0].sha.slice(0, 7)
+		// })
 	})
 
 </script>
@@ -26,7 +26,7 @@
 			<li><a href="https://www.twitter.com/rohanharikr">made by rohanharikr</a></li>
 			<li>{hits || '...'} happy souls</li>
 			<li><a href="https://growwwkit.com/">illustrations from growwwkit</a></li>
-			<li>commit {id || '...'}</li>
+			<!-- <li>commit {id || '...'}</li> -->
 			<li class="link" style="margin-bottom: 0.2rem;">
 				<a href="https://github.com/rohanharikr/chatsecure.online">
 					<img src="github.svg" alt="github logo" class="footericon">

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="101px" height="106px" viewBox="0 0 101 106" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.1 (72631) - https://sketchapp.com -->
+    <title>Group 11</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="59" height="40" rx="2"></rect>
+        <path d="M1.28489269,0.955358286 L28.4002279,18.8065674 C29.0675799,19.2459144 29.9323885,19.2459144 30.5997405,18.8065674 L57.7150757,0.955358286 C57.9457222,0.803513622 58.0096037,0.493443267 57.8577591,0.262796764 C57.7652687,0.122307217 57.6083383,0.0377358491 57.4401366,0.0377358491 L1.55983178,0.0377358491 C1.2836894,0.0377358491 1.05983178,0.261593474 1.05983178,0.537735849 C1.05983178,0.705937476 1.14440314,0.862867883 1.28489269,0.955358286 Z" id="path-3"></path>
+        <filter x="-11.9%" y="-26.3%" width="124.0%" height="174.2%" filterUnits="objectBoundingBox" id="filter-4">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.223721591 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group-11">
+            <rect id="Rectangle" fill="#181818" fill-rule="nonzero" x="0" y="0" width="101" height="106" rx="8"></rect>
+            <g id="Group-10" transform="translate(21.000000, 33.000000)">
+                <g id="Path-4" transform="translate(0.000000, 0.037736)">
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <use id="Mask" fill="#21A6E6" xlink:href="#path-1"></use>
+                    <polygon fill="#1D9FE4" mask="url(#mask-2)" points="4.45283019 1.95121951 59 40 59 0"></polygon>
+                </g>
+                <g id="Path-3">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-4)" xlink:href="#path-3"></use>
+                    <use fill="#50E6FF" fill-rule="evenodd" xlink:href="#path-3"></use>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -4,7 +4,7 @@
 
 <section id="how">
 	<div class="container" style="position: relative;">
-		<h1>How chatsecure.online works</h1>
+		<h1>How chatsecure.online works?</h1>
 		<ul>
 			{#each steps as step, i}
 			<li><div class="circle">{i+1}</div><p>{step}</p></li>

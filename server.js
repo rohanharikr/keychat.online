@@ -61,6 +61,7 @@ io.on('connection', socket => {
             .emit(
                 //this fires a notification on the frontend , 0 = disconnect, 1 = joined
                 'botMessage', 0);
+        secretRoom = '';
     })
 
     //fired when a user disconnects
