@@ -721,12 +721,12 @@
 	.sessionInfo li{
 		display: flex;
 		align-items: center;
-		margin-left: 0.6rem;
+		margin-left: 0.4rem;
 	}
 
 	.status{
-		width: 0.6rem;
-		height: 0.6rem;
+		min-width: 0.6rem;
+		min-height: 0.6rem;
 		border-radius: 50%;
 		background: var(--green);
 		margin-right: 0.4rem;
