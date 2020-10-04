@@ -43,6 +43,7 @@
 		anon = new AnimalAvatar(),
 		isTyping = false,
 		network = true,
+		tabActive = true,
 		chatArea,
 		encKey,
 		appleShare = false,
@@ -107,12 +108,14 @@
 	    		notificationSound("./sounds/enterleave.mp3");
 	    	} else if (joinedSession){
 	    		botMessage = `${userName} has left the chat`;
-				isChatLocked = false
+				isChatLocked = false;
+				shareOptions = true;
     			showNotification(botMessage, 'red');
     			notificationSound("./sounds/enterleave.mp3");
 	    	} else{
 	    		botMessage = `${anonName} has left the chat`;
-				isChatLocked = false
+				isChatLocked = false;
+				shareOptions = true;
     			showNotification(botMessage, 'red');
     			notificationSound("./sounds/enterleave.mp3");
 	    	}
@@ -143,7 +146,9 @@
 		}
 		messages = [...messages, utf8];
     	updateScroll();
-    	notificationSound("./sounds/message.mp3");
+    	if(!tabActive){
+    		notificationSound("./sounds/message.mp3");
+    	}
     });
 
 	function showNotification(msg, color){
@@ -303,6 +308,7 @@
 		const blob = await new Blob([data], {type: "text/plain;charset=utf-8"});
 		FileSaver.saveAs(blob, `${secretKey || joinKey}.txt`);
 		chatOptions = false;
+		chatmessage = '';
 	}
 
 
@@ -355,6 +361,11 @@
 <svelte:head>
 	<link rel="icon" type="image/png" href={!isChatBox ? "offlinefav.svg" : "onlinefav.svg"}>
 </svelte:head>
+
+<svelte:body
+	on:mouseenter={()=>tabActive = true}
+	on:mouseleave={()=>tabActive = false}
+/>
 <!-- causing a lot of bugs, will fix -->
 <!-- <svelte:window on:keydown={checkEnterPress}/> -->
 <div class="main-container" class:modifier={isChatBox}>
@@ -472,12 +483,12 @@
 				{#if chatOptions}
 					<ul class="chatOptions" transition:slide>
 						<li on:click={closeSession}><img src="close.png" alt="close icon"><div>close</div></li>
-						<li on:click={()=>{messages = []; chatOptions = false;}}><img src="clear.png" alt="clear icon"><div>clear</div></li>
+						<li on:click={()=>{messages = []; chatOptions = false; chatmessage = '';}}><img src="clear.png" alt="clear icon"><div>clear</div></li>
 						<li on:click={saveHistory}><img src="download.png" alt="download icon"><div>download</div></li>
 					</ul>
 				{/if}		
 				{#if !isChatLocked}	
-					<div class="loadingChat" transition:slide data-tooltip="Messages cannot be sent unless key exhange happens">
+					<div class="loadingChat" transition:slide data-tooltip="Messages cannot be sent unless key exchange happens">
 						<img src="loader.gif" alt="loading animation" class="loading">
 						<p>waiting for a user to join...</p>
 					</div>
