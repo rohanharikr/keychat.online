@@ -4,7 +4,7 @@
 	import Working from '../components/Working.svelte';
 	import Hightlight from '../components/Hightlight.svelte';
 	import Footer from '../components/Footer.svelte';
-	import { featuresData, working} from '../stores.js';
+	import { featuresData, working } from '../landingPageData.js';
 	import io from 'socket.io-client';
 	import secretKeyGenerator from '../utils/secretKeyGenerator';
 	import { slide } from 'svelte/transition';
@@ -15,7 +15,7 @@
 	import AnimalAvatar from 'animal-avatars.js';
 	import getTime from '../utils/getTime';
 	import notificationSound from '../utils/notificationSound';
-	import device from '../utils/device';
+	import checkDevice from '../utils/device';
 	import FileSaver from 'file-saver';
 	import InternetConnection from "svelte-internet-connection";
 	import nacl from 'tweetnacl';
@@ -45,7 +45,6 @@
 		network = true,
 		tabActive = true,
 		chatArea,
-		encKey,
 		appleShare = false,
 		shareOptions = false,
 		chatOptions = false;
@@ -84,7 +83,7 @@
 		window.history.replaceState({}, document.title, "/");
 		//need to figure out how to send links in imessages and facebook
 
-		// const appleDevice = device();
+		// const appleDevice = checkDevice();
 
 		// if(appleDevice){
 		// 	appleShare = true;
@@ -123,7 +122,6 @@
     }
 
 	socket.on('userData', data => {
-		encKey = data.encKey;
 		anonName = data.anonName;
 		anonAvatar = data.anonAvatar;
 		userName = data.userName;
@@ -174,12 +172,11 @@
 		nonce = naclUtil.encodeBase64(nacl.randomBytes(24));
 
 		secretKey = secretKeyGenerator();
-		encKey = secretKey + secretKeyGenerator();
 		userName = user.getAvatarName(),
 	 	userAvatar = user.getAvatarUrl(),
 		anonName = anon.getAvatarName(),
 	 	anonAvatar = anon.getAvatarUrl(),
-		socket.emit('newRoom', {secretKey, userName, userAvatar, anonName, anonAvatar, encKey, userPublicKey, nonce});
+		socket.emit('newRoom', {secretKey, userName, userAvatar, anonName, anonAvatar, userPublicKey, nonce});
 		isLoadingStart = true;
 		setTimeout(() => {
 			isLoadingStart = false;
@@ -241,7 +238,6 @@
 		isTyping = false;
 		network = true;
 		chatArea;
-		encKey;
 		chatOptions = false;
 		userName = false;
 		anonName = false;
@@ -294,7 +290,6 @@
 		setTimeout(() => secretLinkCopied = false, timeoutNotification);
 	}
 
-	//local vars
 	let typing = false, 
 		timeout = undefined;
 
@@ -370,9 +365,7 @@
 <!-- <svelte:window on:keydown={checkEnterPress}/> -->
 <div class="main-container" class:modifier={isChatBox}>
 <div class:modifier--displayNone={isChatBox}>
-	<a href="https://chatsecure.online">
-		<Header src={isChatBox ? "chatsecureonline.svg" : "chatsecureoffline.svg"} />
-	</a>
+<Header src={isChatBox ? "chatsecureonline.svg" : "chatsecureoffline.svg"} />
 </div>
 <main class:main--modifier={isChatBox}>
 	<div class="enterSessionCard" class:enterSessionCard--modifier={isChatBox}>
@@ -517,13 +510,13 @@
 	{/if}
 </main>
 <div class:mobileChatActive={isChatBox}>
-	<Features features={$featuresData} />
+	<Features features={featuresData} />
 </div>
 <div class:mobileChatActive={isChatBox}>
 	<Hightlight />
 </div>
 <div class:mobileChatActive={isChatBox}>
-	<Working steps={$working} />
+	<Working steps={working} />
 </div>
 </div>
 <div class:mobileChatActive={isChatBox}>

@@ -2,20 +2,22 @@ const app = require('express')();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 
-let userName, userAvatar, anonName, anonAvatar, encKey, userPublicKey, anonPublicKey, nonce;
+let userName, userAvatar, anonName, anonAvatar, userPublicKey, anonPublicKey, nonce;
 
 io.on('connection', socket => {
     let secretRoom;
+
     socket.on('joinRoom', data => {
+        //check if session exists and user count < 2
         if (io.sockets.adapter.rooms[data.joinKey] && io.sockets.adapter.rooms[data.joinKey].length === 1) {
             secretRoom = data.joinKey;
             anonPublicKey = data.anonPublicKey;
             socket.join(secretRoom);
-            io.in(secretRoom).emit('userData', { userName, userAvatar, anonName, anonAvatar, encKey, userPublicKey, anonPublicKey, nonce });
+            io.in(secretRoom).emit('userData', { userName, userAvatar, anonName, anonAvatar, userPublicKey, anonPublicKey, nonce });
             socket.broadcast
                 .to(secretRoom)
                 .emit(
-                    //this fires a notification on the frontend , 0 = disconnect, 1 = joined
+                    //sends a notif to fe, 0 = disconnect, 1 = joined
                     'botMessage', 1);
         } else {
             socket.emit('sessionLocked');
@@ -28,20 +30,15 @@ io.on('connection', socket => {
         anonName = data.anonName;
         anonAvatar = data.anonAvatar;
         secretRoom = data.secretKey;
-        encKey = data.encKey;
         userPublicKey = data.userPublicKey;
         nonce = data.nonce;
         socket.join(secretRoom);
-        //get total numbers os clients in a room
-        // const room = io.sockets.adapter.rooms[secretRoom].length;
         socket.broadcast
             .to(secretRoom)
             .emit(
-                //this fires a notification on the frontend , 0 = disconnect, 1 = joined
                 'botMessage', 1);
     });
 
-    //message to room
     socket.on('message', message => {
         socket.broadcast.to(secretRoom).emit('sendMessage', message);
     });
@@ -54,22 +51,20 @@ io.on('connection', socket => {
         socket.broadcast.to(secretRoom).emit('noLongerTyping');
     })
 
+    //when user leaves room at will
     socket.on('disconnecting', () => {
         socket.leave(secretRoom);
         socket.broadcast
             .to(secretRoom)
             .emit(
-                //this fires a notification on the frontend , 0 = disconnect, 1 = joined
                 'botMessage', 0);
         secretRoom = '';
     })
 
-    //fired when a user disconnects
     socket.on('disconnect', () => {
         socket.broadcast
             .to(secretRoom)
             .emit(
-                //this fires a notification on the frontend , 0 = disconnect, 1 = joined
                 'botMessage', 0);
     });
 });
