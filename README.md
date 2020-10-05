@@ -1,16 +1,16 @@
 <div align="center">
   <h5>When I wrote this, only God and I understood what I was doing. Now, only God knows.</h5>
   <br>
-  <a href="https://chatsecure.online"><img src="client/static/logo-512.png" alt="chatsecure.online logo" height="128"></a>
+  <a href="https://keychat.online"><img src="client/static/logo-512.png" alt="keychat.online logo" height="128"></a>
   <br><br>
   <p>
-    <b>chatsecure.online</b>
+    <b>keychat.online</b>
     <p>Start a free secure and private chat with anyone without logging in or signing up
   </p>
 </div>
 <br>
 <div align="center">
-  <a href="https://chatsecure.online"><img src="client/static/screenshot.png" alt="screenshot" width="100%"></a>
+  <a href="https://keychat.online"><img src="client/static/screenshot.png" alt="screenshot" width="100%"></a>
 </div>
 <br>
 
@@ -22,7 +22,7 @@
 
 ## **Demo**
 
-[https://chatsecure.online](https://chatsecure.online)
+[https://keychat.online](https://keychat.online)
 
 
 ## **Built with**

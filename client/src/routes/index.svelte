@@ -74,7 +74,7 @@
 		if(param){
 			joinKey = param;
 			joinSession();
-			secretLink = `https://chatsecure.online/?sc=${param}`;
+			secretLink = `https://keychat.online/?sc=${param}`;
 			whatsappLink = `https://wa.me/?text=${secretLink}`;
 			telegramLink = `https://t.me/share?url=${secretLink}`;
 			emailLink = `mailto:someone@yoursite.com?body=${secretLink}`
@@ -184,7 +184,7 @@
 		}, 300) //ux
 
 		shareOptions = true;
-		secretLink = `https://chatsecure.online/?sc=${secretKey || joinKey}`;
+		secretLink = `https://keychat.online/?sc=${secretKey || joinKey}`;
 		whatsappLink = `https://wa.me/?text=${secretLink}`;
 		telegramLink = `https://t.me/share?url=${secretLink}`;
 		emailLink = `mailto:someone@yoursite.com?body=${secretLink}`
@@ -217,7 +217,7 @@
 			}
 		}, 1500)
 
-		secretLink = `https://chatsecure.online/?sc=${secretKey || joinKey}`;
+		secretLink = `https://keychat.online/?sc=${secretKey || joinKey}`;
 		whatsappLink = `https://wa.me/?text=${secretLink}`;
 		telegramLink = `https://t.me/share?url=${secretLink}`;
 		emailLink = `mailto:someone@yoursite.com?body=${secretLink}`
@@ -505,8 +505,8 @@
 				<img src="loader.gif" alt="loading gif" class="loaderAnim">
 			{/if}
 		</button>
-	{:else}
-		<p class="warning" in:fade class:modifier--displayNone={isChatBox}>Please do not share personal information with anyone</p>
+<!-- 	{:else}
+		<p class="warning" in:fade class:modifier--displayNone={isChatBox}>Please do not share personal information with anyone</p> -->
 	{/if}
 </main>
 <div class:mobileChatActive={isChatBox}>
@@ -627,13 +627,13 @@
 		margin-right: 0.6rem;
 	}
 
-	.warning{
+/*	.warning{
 		font-weight: 300;
 		text-align: center;
 		font-size: 0.7rem;
 		margin-top: 1.2rem;
 		opacity: 0.8;
-	}
+	}*/
 
 	.sharelink{
 		font-size: 0.8rem;

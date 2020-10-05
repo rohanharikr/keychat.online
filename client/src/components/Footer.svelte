@@ -9,7 +9,7 @@
   			hits = result.value
 		});
 
-		// await fetch('https://api.github.com/repos/rohanharikr/chatsecure.online/commits')
+		// await fetch('https://api.github.com/repos/rohanharikr/keychat.online/commits')
 		// 	.then((response) => response.json())
 		// 	.then((data) => {
 		// 	id = data[0].sha.slice(0, 7)
@@ -28,7 +28,7 @@
 			<li><a href="https://growwwkit.com/">illustrations from growwwkit</a></li>
 			<!-- <li>commit {id || '...'}</li> -->
 			<li class="link" style="margin-bottom: 0.2rem;">
-				<a href="https://github.com/rohanharikr/chatsecure.online">
+				<a href="https://github.com/rohanharikr/keychat.online">
 					<img src="github.svg" alt="github logo" class="footericon">
 				</a>
 			</li>
