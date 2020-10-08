@@ -393,8 +393,7 @@
 						<div data-tooltip="Share this secret code to start chatting">{secretKey || joinKey}</div>
 						<div class="flex">
 							<img src={secretKeyCopied ? "copied.svg" : "copy.svg"} alt="copied icon" class="copyIcon" on:click={copySecretKey}>
-							<div style="width: 3px; height: 3px; background-color: #404040; border-radius: 50%"></div>
-							<img src={!shareOptions ? "share.svg" : "shareactive.svg"} alt="share icon" class="copyIcon" on:click={()=>{shareOptions = !shareOptions}}>
+							<img src={!shareOptions ? "share.svg" : "shareactive.svg"} alt="share icon" class="copyIcon" on:click={()=>{shareOptions = !shareOptions}} style="margin-left: 0.4rem; margin-right: -0.2rem;">
 						</div>
 					</div>
 					<ul>
@@ -424,12 +423,12 @@
 							</a>
 							<a href={telegramLink} target="_blank">
 								<img src="telegram.svg" title="Telegram" alt="Telegram" class="chatOption"></a>
-							{#if appleShare}
+							<!-- {#if appleShare}
 								<a href={imessageLink} target="_blank">
 									<img src="imessage.svg" title="iMessage" alt="iMessage" class="chatOption">
 								</a>
 							{/if}
-<!-- 								<a href={messengerLink} target="_blank">
+							<a href={messengerLink} target="_blank">
 								<img src="messenger.svg" title="Facebook Messenger" alt="messenger icon icon" class="chatOption">
 							</a> -->
 							<a href={emailLink} target="_blank">
@@ -776,13 +775,17 @@
 
 	.chatBubbleBlue{
 		background: #3F8BFE;
-		display: table;
 		padding: 0.6rem;
 		border-radius: 1rem 1rem 0 1rem;
 		font-size: 0.8rem;
 		font-weight: 400;
 		margin-left: auto;
 		margin-bottom: 0.8rem;
+		text-align: right;
+		max-width: 12rem;
+		height: auto;
+		word-wrap: break-word;
+		text-align: right;
 	}
 
 	.shareOptions{
@@ -801,13 +804,17 @@
 
 	.chatBubbleGrey{
 		background: #414141;
-		display: table;
 		padding: 0.6rem;
 		border-radius: 1rem 1rem 1rem 0;
 		font-size: 0.8rem;
 		font-weight: 400;
 		margin-right: auto;
 		margin-bottom: 0.8rem;
+		text-align:left;
+		max-width: 12rem;
+		height: auto;
+		word-wrap: break-word;
+		text-align: left;
 	}
 
 	.notification{

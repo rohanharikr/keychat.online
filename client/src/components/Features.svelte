@@ -40,7 +40,7 @@
 		opacity: 0.8;
 	}
 
-	@media only screen and (max-width: 768px) {
+	@media only screen and (max-width: 912px) {
 		#features{
 			margin-top: 4rem;
 			overflow-x: scroll;

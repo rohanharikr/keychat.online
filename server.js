@@ -4,11 +4,13 @@ const io = require('socket.io')(http);
 
 let userName, userAvatar, anonName, anonAvatar, userPublicKey, anonPublicKey, nonce;
 
+const USER_JOINED = 1
+const USER_LEFT = 0
+
 io.on('connection', socket => {
     let secretRoom;
 
     socket.on('joinRoom', data => {
-        //check if session exists and user count < 2
         if (io.sockets.adapter.rooms[data.joinKey] && io.sockets.adapter.rooms[data.joinKey].length === 1) {
             secretRoom = data.joinKey;
             anonPublicKey = data.anonPublicKey;
@@ -17,8 +19,7 @@ io.on('connection', socket => {
             socket.broadcast
                 .to(secretRoom)
                 .emit(
-                    //sends a notif to fe, 0 = disconnect, 1 = joined
-                    'botMessage', 1);
+                    'botMessage', USER_JOINED);
         } else {
             socket.emit('sessionLocked');
         }
@@ -36,7 +37,7 @@ io.on('connection', socket => {
         socket.broadcast
             .to(secretRoom)
             .emit(
-                'botMessage', 1);
+                'botMessage', USER_JOINED);
     });
 
     socket.on('message', message => {
@@ -57,7 +58,7 @@ io.on('connection', socket => {
         socket.broadcast
             .to(secretRoom)
             .emit(
-                'botMessage', 0);
+                'botMessage', USER_LEFT);
         secretRoom = '';
     })
 
@@ -65,7 +66,7 @@ io.on('connection', socket => {
         socket.broadcast
             .to(secretRoom)
             .emit(
-                'botMessage', 0);
+                'botMessage', USER_LEFT);
     });
 });
 

@@ -19,6 +19,6 @@ export const working = [
     'A public key is then generated and broadcasted to the listener of the same session',
     'All messages are encypted / decrypted using elliptic curve Diffie-Hellman key exchange',
     'Locked from interference or listening when a total of two users are present in a session',
-    'Since there is not persisent data, if you reload or leave & join the same session, the history won\'t be present',
+    'Since there is no persisent data, if you reload or leave & join the same session, the history won\'t be present',
     'Once both the users leave a session, the session will be destroyed'
 ];
