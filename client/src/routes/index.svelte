@@ -47,7 +47,9 @@
 		chatArea,
 		appleShare = false,
 		shareOptions = false,
-		chatOptions = false;
+		chatOptions = false,
+		file = false,
+		fileData = null;
 
 	let userName,
 	 	userAvatar,
@@ -80,7 +82,7 @@
 			emailLink = `mailto:someone@yoursite.com?body=${secretLink}`
 		}
 
-		window.history.replaceState({}, document.title, "/");
+		if(param) window.history.replaceState({}, document.title, "/");
 		//need to figure out how to send links in imessages and facebook
 
 		// const appleDevice = checkDevice();
@@ -248,8 +250,8 @@
 	}
 
 	function sendMessage(){
-		messages = [...messages, {way: 'out', msg: chatmessage, time: getTime()}];
-		let data = JSON.stringify({way: 'in', msg: chatmessage, time: getTime()});
+		messages = [...messages, {way: 'out', msg: chatmessage, file, fileData, time: getTime()}];
+		let data = JSON.stringify({way: 'in', msg: chatmessage, file, fileData, time: getTime()});
 		let box;
 		if(joinedSession){
 			box = nacl.box(
@@ -262,12 +264,13 @@
   			naclUtil.decodeUTF8(data),
   			nonce,
   			anonPublicKey,
-  			userPrivateKey)
-  					
+  			userPrivateKey)	
 		}
 		box = naclUtil.encodeBase64(box);
 		socket.emit('message', box);
 		chatmessage = '';
+		file = false;
+		fileData = null;
 		inputRef.focus()
 		updateScroll();
 	}
@@ -351,6 +354,17 @@
     		chatArea.scrollTop = chatArea.scrollHeight;  
   		}, 0);
 	}
+
+	function uploadFile(e){
+		chatmessage = e.target.files[0].name;
+		file = true;
+		fileData = e.target.files[0];
+		const reader = new FileReader();
+ 		reader.readAsDataURL(fileData); 
+ 		reader.onloadend  = function() {
+     		 fileData = reader.result;                
+ 		}
+	}	
 </script>
 
 <svelte:head>
@@ -376,7 +390,7 @@
 					{notificationMessage.msg}
 				</div>
 			{/if}
-			<button on:click={joinSession} style="background: var(--grey)" disabled={!joinKey.length} class:focus={joinKey.length}>
+			<button on:click|once={joinSession} style="background: var(--grey)" disabled={!joinKey.length} class:focus={joinKey.length}>
 				{#if !isLoadingJoin}
 					Enter with secret code
 				{:else}
@@ -443,10 +457,16 @@
 					</div>
 				{/if}
 				<div class="chatArea" in:fade={{duration: 500}} bind:this={chatArea}>
-					{#each messages as {way, msg, time}}
+					{#each messages as {way, msg, time, file, fileData}}
 						{#if way === 'out'}
 							<div class="chatBubbleContainer" in:fly="{{y: 10, duration: 300}}">
-								<div class="chatBubbleBlue">{msg}</div>
+								<div class="chatBubbleBlue">
+									{#if file}
+										<a download={msg} href={fileData}>{msg}</a>
+									{:else}
+										{msg}
+									{/if}
+								</div>
 								{#if !joinedSession}
 									<div class="avatar avatarUser tooltip-bottom-right" style="background-image: url({userAvatar}); font-size: 0.8rem;" data-tooltip={userName}></div>
 								{:else}
@@ -461,7 +481,13 @@
 								{:else}
 									<div class="avatar avatarAnon tooltip-bottom-left" style="background-image: url({userAvatar}); font-size: 0.8rem;" data-tooltip={userName}></div>
 								{/if}
-								<div class="chatBubbleGrey">{msg}</div>
+								<div class="chatBubbleGrey">
+									{#if file}
+										<a download={msg} href={fileData}>{msg}</a>
+									{:else}
+										{msg}
+									{/if}
+								</div>						
 							</div>
 							<div class="timeStamp timeStampAnon" in:fly="{{y: 10, duration: 300}}">{time}</div>
 						{/if}
@@ -486,6 +512,7 @@
 					</div>
 				{/if}
 				<div class="messageBoxContainer flex" in:fade={{duration: 500}}>
+					<input type='file' on:change={uploadFile}>
 					<input class="messageBox" bind:value={chatmessage} placeholder="type your message here" bind:this={inputRef}  on:keydown={checkEnterPress} disabled={!isChatLocked} />
 					<button on:click={sendMessage} disabled={!chatmessage.length || chatmessage === "/"}><img src="send.png" alt="send icon" class="sendIcon"><div style="margin-top: 0.2rem;">Send</div></button>
 				</div>
@@ -497,7 +524,7 @@
 		{/if}
 	</div>
 	{#if !isChatBox}
-		<button class="newSession" on:click={startSession}>
+		<button class="newSession" on:click|once={startSession}>
 			{#if !isLoadingStart}
 				Start a new chat
 			{:else}
