@@ -413,7 +413,7 @@
 					{notificationMessage.msg}
 				</div>
 			{/if}
-			<button on:click|once={joinSession} style="background: var(--grey)" disabled={!joinKey.length} class:focus={joinKey.length}>
+			<button on:click={joinSession} style="background: var(--grey)" disabled={!joinKey.length} class:focus={joinKey.length}>
 				{#if !isLoadingJoin}
 					Enter with secret code
 				{:else}
@@ -539,7 +539,7 @@
 					</div>
 				{/if}
 				<div class="messageBoxContainer flex" in:fade={{duration: 500}}>
-					<div style="position: relative; width: 68%">
+					<div>
 						<input type='file' on:change={uploadFile} bind:this={uploadButtonRef} hidden>
 						{#if file}
 							<img src="close.svg" alt="attachment icon" class="attachmentIcon" style="opacity: 0.2;" on:click={cancelUpload}>
@@ -548,7 +548,9 @@
 						{/if}
 						<input class="messageBox" bind:value={chatmessage} maxlength="1024" minlength="1" placeholder="type your message here" bind:this={inputRef}  on:keydown={checkEnterPress} disabled={!isChatLocked || file} class:fileUploaded={file} />
 					</div>
-					<button on:click={sendMessage} disabled={!chatmessage.length || chatmessage === "/"}><img src="send.png" alt="send icon" class="sendIcon"><div style="margin-top: 0.2rem;">Send</div></button>
+					<button on:click={sendMessage} disabled={!chatmessage.length || chatmessage === "/"}><img src="send.png" alt="send icon" class="sendIcon">
+						<span class="sendText">Send</span>
+					</button>
 				</div>
 				{#if fileLargeError}	
 					<p transition:slide class="fileLargeError">
@@ -563,7 +565,7 @@
 		{/if}
 	</div>
 	{#if !isChatBox}
-		<button class="newSession" on:click|once={startSession}>
+		<button class="newSession" on:click={startSession}>
 			{#if !isLoadingStart}
 				Start a new chat
 			{:else}
@@ -749,6 +751,11 @@
 		width: 28%;
 	}
 
+	.messageBoxContainer div{
+		position: relative;
+		width: 68%;
+	}
+
 	.onlyDesktop{
 		display: inline-block;
 	}
@@ -767,6 +774,10 @@
 	.sendIcon{
 		height: 0.8rem;
 		margin-right: 0.4rem;
+	}
+
+	.sendText{
+		margin-top: 0.2rem;
 	}
 
 	.chatArea{
@@ -919,12 +930,9 @@
 		text-align: left;
 	}
 
-	.chatBubbleGrey a{
-		color: var(--blue);
-	}
-
 	.chatBubbleGrey img{
 		height: 0.96rem;
+		filter: brightness(10);
 		margin-right: 0.4rem;
 	}
 
@@ -1020,6 +1028,23 @@
 
 		.modifier--displayNone{
 			display: none;
+		}
+
+		.messageBoxContainer div{
+			position: relative;
+			width: 76%;
+		}
+
+		.messageBoxContainer button{
+			width: 20%;
+		}
+
+		.sendText{
+			display: none;
+		}
+
+		.sendIcon{
+			margin-right: 0;
 		}
   	}
 </style>
