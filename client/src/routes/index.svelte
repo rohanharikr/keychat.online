@@ -485,7 +485,7 @@
 							<div class="chatBubbleContainer" in:fly="{{y: 10, duration: 300}}">
 								<div class="chatBubbleBlue">
 									{#if file}
-										<a download={msg} href={fileData}>
+										<a download={msg} href={fileData} style="word-wrap: anywhere;">
 											{msg}<img src="attachment.svg" alt="attachment icon">
 										</a>
 									{:else}
@@ -508,8 +508,8 @@
 								{/if}
 								<div class="chatBubbleGrey">
 									{#if file}
-										<a download={msg} href={fileData}>
-											<img src="attachment.svg" alt="attachment icon">{msg}
+										<a download={msg} href={fileData} style="word-wrap: anywhere;">
+											<img src="attachment.svg" alt="attachment icon" style="filter: brightness(10);">{msg}
 										</a>
 									{:else}
 										{msg}
@@ -521,6 +521,11 @@
 					{/each}
 					{#if isTyping}
 						<div class="chatBubbleContainer" in:fly="{{y: 10, duration: 300}}" out:fly="{{y: 10, duration: 100}}">
+								{#if !joinedSession}
+									<div class="avatar avatarAnon tooltip-bottom-left" style="background-image: url({anonAvatar}); font-size: 0.8rem;" data-tooltip={anonName}></div>
+								{:else}
+									<div class="avatar avatarAnon tooltip-bottom-left" style="background-image: url({userAvatar}); font-size: 0.8rem;" data-tooltip={userName}></div>
+								{/if}
 							<div class="chatBubbleGrey typingAnimContainer"><img src="typing.gif" alt="typing anim" class="typingAnim"></div>
 						</div>
 					{/if}
@@ -609,16 +614,17 @@
 	}
 
 	.typingAnimContainer{
-		padding: 0;
-		height: 2.2rem;
-		width: 3.8rem;
+		padding: 0 !important;
+		height: 2.2rem !important;
+		width: 3.8rem !important;
 		display: flex !important;
 		justify-content: center !important;
 		align-items: center !important;
 	}
 
 	.typingAnim{
-		height: 1.6rem;
+		height: 1.46rem !important;
+		margin-right: 0 !important;
 	}
 
 	button:disabled,
@@ -857,8 +863,7 @@
 	}
 
 	.chatOptions img{
-		height: 0.8rem;
-		margin-right: 0.4rem;
+		height: 1.26rem;
 	}
 
 	.fileLargeError{
@@ -932,7 +937,6 @@
 
 	.chatBubbleGrey img{
 		height: 0.96rem;
-		filter: brightness(10);
 		margin-right: 0.4rem;
 	}
 
