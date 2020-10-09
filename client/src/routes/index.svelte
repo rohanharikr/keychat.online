@@ -49,7 +49,9 @@
 		shareOptions = false,
 		chatOptions = false,
 		file = false,
-		fileData = null;
+		fileData = null,
+		uploadButtonRef = false,
+		fileLargeError = false;
 
 	let userName,
 	 	userAvatar,
@@ -68,7 +70,8 @@
 		messengerLink,
 		emailLink;
 
-	const timeoutNotification = 2000;
+	const MAX_FILE_SIZE = 3145728; //3.14mb
+	const NOTIFICATION_VISIBLE_TIME = 2000;
 
 	onMount( async() => {
 		const urlParams = new URLSearchParams(window.location.search);
@@ -154,7 +157,7 @@
 	function showNotification(msg, color){
 		notification = true;
 		notificationMessage = {msg, color};
-		setTimeout(() => notification = false, timeoutNotification);
+		setTimeout(() => notification = false, NOTIFICATION_VISIBLE_TIME);
 	}
 
 	socket.on('typing', () => {
@@ -283,14 +286,14 @@
 			copy(joinKey)
 		} 
 		showNotification("Secret Key copied", 'green')
-		setTimeout(() => secretKeyCopied = false, timeoutNotification);
+		setTimeout(() => secretKeyCopied = false, NOTIFICATION_VISIBLE_TIME);
 	}
 
 	function copySecretLink(){
 		secretLinkCopied = !secretLinkCopied;
 		copy(secretLink)
 		showNotification("Secret Link copied", 'green')
-		setTimeout(() => secretLinkCopied = false, timeoutNotification);
+		setTimeout(() => secretLinkCopied = false, NOTIFICATION_VISIBLE_TIME);
 	}
 
 	let typing = false, 
@@ -302,7 +305,13 @@
 	}
 
 	async function saveHistory(){
-		const data = JSON.stringify(messages);
+		let chatHistory = messages;
+		chatHistory = chatHistory.map(message => ({
+			way: message.way,
+			message: message.msg,
+			time: message.time
+		}));
+		const data = JSON.stringify(chatHistory);
 		const blob = await new Blob([data], {type: "text/plain;charset=utf-8"});
 		FileSaver.saveAs(blob, `${secretKey || joinKey}.txt`);
 		chatOptions = false;
@@ -356,15 +365,29 @@
 	}
 
 	function uploadFile(e){
-		chatmessage = e.target.files[0].name;
+		let fileRef = e.target.files[0];
+		if (fileRef.size > MAX_FILE_SIZE){
+			fileLargeError = true;
+			setTimeout(()=>{
+				fileLargeError = false
+			}, NOTIFICATION_VISIBLE_TIME)
+			return;
+		}
+		chatmessage = fileRef.name;
 		file = true;
-		fileData = e.target.files[0];
+		fileData = fileRef;
 		const reader = new FileReader();
  		reader.readAsDataURL(fileData); 
  		reader.onloadend  = function() {
      		 fileData = reader.result;                
  		}
 	}	
+
+	function cancelUpload(){
+		chatmessage = '';
+		file = false;
+		fileData = null;
+	}
 </script>
 
 <svelte:head>
@@ -462,7 +485,9 @@
 							<div class="chatBubbleContainer" in:fly="{{y: 10, duration: 300}}">
 								<div class="chatBubbleBlue">
 									{#if file}
-										<a download={msg} href={fileData}>{msg}</a>
+										<a download={msg} href={fileData}>
+											{msg}<img src="attachment.svg" alt="attachment icon">
+										</a>
 									{:else}
 										{msg}
 									{/if}
@@ -483,7 +508,9 @@
 								{/if}
 								<div class="chatBubbleGrey">
 									{#if file}
-										<a download={msg} href={fileData}>{msg}</a>
+										<a download={msg} href={fileData}>
+											<img src="attachment.svg" alt="attachment icon">{msg}
+										</a>
 									{:else}
 										{msg}
 									{/if}
@@ -504,7 +531,7 @@
 						<li on:click={()=>{messages = []; chatOptions = false; chatmessage = '';}}><img src="clear.png" alt="clear icon"><div>clear</div></li>
 						<li on:click={saveHistory}><img src="download.png" alt="download icon"><div>download</div></li>
 					</ul>
-				{/if}		
+				{/if}	
 				{#if !isChatLocked}	
 					<div class="loadingChat" transition:slide data-tooltip="Messages cannot be sent unless key exchange happens">
 						<img src="loader.gif" alt="loading animation" class="loading">
@@ -512,10 +539,22 @@
 					</div>
 				{/if}
 				<div class="messageBoxContainer flex" in:fade={{duration: 500}}>
-					<input type='file' on:change={uploadFile}>
-					<input class="messageBox" bind:value={chatmessage} placeholder="type your message here" bind:this={inputRef}  on:keydown={checkEnterPress} disabled={!isChatLocked} />
+					<div style="position: relative; width: 68%">
+						<input type='file' on:change={uploadFile} bind:this={uploadButtonRef} hidden>
+						{#if file}
+							<img src="close.svg" alt="attachment icon" class="attachmentIcon" style="opacity: 0.2;" on:click={cancelUpload}>
+						{:else}
+							<img src="attachment.svg" alt="attachment icon" class="attachmentIcon" class:attachmentDisabled={chatmessage.length || !isChatLocked} on:click={()=>uploadButtonRef.click()}>
+						{/if}
+						<input class="messageBox" bind:value={chatmessage} maxlength="1024" minlength="1" placeholder="type your message here" bind:this={inputRef}  on:keydown={checkEnterPress} disabled={!isChatLocked || file} class:fileUploaded={file} />
+					</div>
 					<button on:click={sendMessage} disabled={!chatmessage.length || chatmessage === "/"}><img src="send.png" alt="send icon" class="sendIcon"><div style="margin-top: 0.2rem;">Send</div></button>
 				</div>
+				{#if fileLargeError}	
+					<p transition:slide class="fileLargeError">
+						Please upload a file less than 3mb
+					</p>
+				{/if}
 				{#if !chatOptions}
 					<p class="chatOptionsHelper" transition:slide>type '/' for chat options<span style="margin-left:0.8rem;" class="onlyDesktop">open console for your public key</span></p>
 				{/if}
@@ -645,6 +684,22 @@
 		
 	}
 
+	.attachmentIcon{
+		height: 1.1rem;
+		right: 12px;
+		position: absolute;
+		top: 12px;
+	}
+
+	.fileUploaded{
+		color: #7b8aff;
+	}
+
+	.attachmentDisabled{
+		pointer-events: none;
+		filter: grayscale(100%);
+	}
+
 	.avatarUser{
 		margin-left: 0.6rem;
 	}
@@ -703,7 +758,10 @@
 		text-align: left;
 		padding: 1rem;
 		margin-bottom: 0;
-		width: 68%;
+		width: 100%;
+		/*font correction*/
+		padding-top: 1.1rem;
+		padding-right: 2.2rem;
 	}
 
 	.sendIcon{
@@ -792,6 +850,13 @@
 		margin-right: 0.4rem;
 	}
 
+	.fileLargeError{
+		font-size: 0.8rem;
+		margin-left: 1rem;
+		margin-top: 0.6rem;
+		color: var(--red);
+	}
+
 	.chatOptionsHelper{
 		font-weight: 600;
 		margin-left: 1rem;
@@ -808,11 +873,21 @@
 		font-weight: 400;
 		margin-left: auto;
 		margin-bottom: 0.8rem;
-		text-align: right;
 		max-width: 12rem;
 		height: auto;
 		word-wrap: break-word;
 		text-align: right;
+	}
+
+	.chatBubbleBlue a, .chatBubbleGrey a{
+		display: flex;
+		align-items: center;
+	}
+
+	.chatBubbleBlue img{
+		height: 0.96rem;
+		filter: brightness(10);
+		margin-left: 0.4rem;
 	}
 
 	.shareOptions{
@@ -842,6 +917,15 @@
 		height: auto;
 		word-wrap: break-word;
 		text-align: left;
+	}
+
+	.chatBubbleGrey a{
+		color: var(--blue);
+	}
+
+	.chatBubbleGrey img{
+		height: 0.96rem;
+		margin-right: 0.4rem;
 	}
 
 	.notification{
@@ -882,12 +966,12 @@
 	}
 
 	.red{
-		background: #F91C1C;
+		background: var(--red);
 		color: white !important;
 	}
 
 	.redtext{
-		color: #F91C1C;
+		color: var(--red);
 	}
 
 	.chatBoxLogo{
