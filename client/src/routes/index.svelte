@@ -70,7 +70,7 @@
 		messengerLink,
 		emailLink;
 
-	const MAX_FILE_SIZE = 3145728; //3.14mb
+	const MAX_FILE_SIZE = 1000000; //1mb
 	const NOTIFICATION_VISIBLE_TIME = 2000;
 
 	onMount( async() => {
@@ -554,7 +554,7 @@
 				</div>
 				{#if fileLargeError}	
 					<p transition:slide class="fileLargeError">
-						Please upload a file less than 3mb
+						Please upload a file less than 1mb
 					</p>
 				{/if}
 				{#if !chatOptions}
