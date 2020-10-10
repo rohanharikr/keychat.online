@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="101px" height="106px" viewBox="0 0 101 106" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.1 (72631) - https://sketchapp.com -->
+    <title>Group 3</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group-3" transform="translate(-0.350000, 0.000000)">
+            <g id="Group-2" fill-rule="nonzero">
+                <rect id="Rectangle" fill="#181818" x="0.35" y="0" width="101" height="106" rx="8"></rect>
+                <path d="M29.0769231,33 C26.8487566,33 25,34.8592213 25,37.1 L25,69.9 C25,72.1407792 26.8487566,74 29.0769231,74 L73.9230769,74 C76.1512438,74 78,72.1407792 78,69.9 L78,37.1 C78,34.8592213 76.1512438,33 73.9230769,33 L29.0769231,33 Z M34.5791768,37.1 L68.4208228,37.1 L51.5,49.6762703 L34.5791768,37.1 Z M31.1153846,42.1729493 L51.5,57.3237297 L71.8846154,42.1729493 L71.8846154,69.9 L31.1153846,69.9 L31.1153846,42.1729493 Z" id="Shape" fill="#C3C3C3"></path>
+            </g>
+            <g id="icons8-gmail" transform="translate(24.350000, 33.000000)"></g>
+        </g>
+    </g>
+</svg>

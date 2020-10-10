@@ -1,0 +1,116 @@
+@import url('https://fonts.googleapis.com/css2?family=Overpass:wght@300;400;600&display=swap');
+
+:root {
+    --bg-color: #141318;
+    --blue: #6875f5;
+    --grey: #1f1e22;
+    --green: #04e887;
+    --red: #F91C1C;
+    --border-grey: #35363B;
+}
+
+::-webkit-scrollbar {
+    background: #201c29;
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #201c29;
+    border-radius: 4px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Overpass', sans-serif;
+    color: #EEE;
+}
+
+html {
+    scroll-behavior: smooth;
+    scrollbar-color: #201c29 var(--bg-color);
+}
+
+body {
+    background: var(--bg-color);
+}
+
+li {
+    list-style: none;
+}
+
+.container {
+    margin: auto;
+    max-width: 60rem;
+}
+
+.flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#highlight h1,
+#how h1 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: auto;
+    text-align: center;
+}
+
+input {
+    background: #181818;
+    height: 2.6rem;
+    border: none;
+    text-align: center;
+    border-radius: 0.4rem;
+    margin-bottom: 1rem;
+    font-size: 1.6rem;
+    font-weight: 300;
+}
+
+input:focus {
+    outline: none;
+    border: 1px solid var(--border-grey);
+}
+
+a {
+    text-decoration: none;
+}
+
+button {
+    width: 100%;
+    height: 2.8rem;
+    background: var(--blue);
+    border: none;
+    border-radius: 0.4rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+button:hover {
+    filter: brightness(120%);
+}
+
+button:focus {
+    outline: none;
+}
+
+@media only screen and (max-width: 768px) {
+
+    #highlight h1,
+    #how h1 {
+        font-size: 1rem;
+        font-weight: 600;
+    }
+}
