@@ -100,7 +100,7 @@
 
 	//connect to socket.io server
 	if(!socket){
-	    socket = io('https://chatsecuresocket.herokuapp.com/')
+	    socket = io(':3001')
 
 	    //listen for notification message
 	    socket.on('botMessage', status => {
