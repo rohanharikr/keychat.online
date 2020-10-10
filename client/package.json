@@ -16,6 +16,8 @@
     "svelte": "^3.0.0"
   },
   "dependencies": {
+    "@analytics/google-analytics": "^0.5.2",
+    "analytics": "^0.5.5",
     "animal-avatars.js": "0.0.2",
     "countapi-js": "^1.0.1",
     "file-saver": "^2.0.2",

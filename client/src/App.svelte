@@ -21,6 +21,20 @@
 	import nacl from 'tweetnacl';
 	import naclUtil from 'tweetnacl-util';
 	import { onMount } from 'svelte';
+    import Analytics from 'analytics'
+    import googleAnalytics from '@analytics/google-analytics'
+ 
+    const analytics = Analytics({
+      app: 'chatsecure-online',
+      plugins: [
+        googleAnalytics({
+          trackingId: 'UA-143444026-5'
+        })
+      ]
+    })
+ 
+    /* Track a page view */
+    analytics.page()
 
  	let socket,
 		secretKey,
