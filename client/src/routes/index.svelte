@@ -51,7 +51,8 @@
 		file = false,
 		fileData = null,
 		uploadButtonRef = false,
-		fileLargeError = false;
+		fileLargeError = false,
+		sendingMessage = false;
 
 	let userName,
 	 	userAvatar,
@@ -70,7 +71,8 @@
 		messengerLink,
 		emailLink;
 
-	const MAX_FILE_SIZE = 1000000; //1mb
+	const MAX_FILE_SIZE = 200000; //200kb
+
 	const NOTIFICATION_VISIBLE_TIME = 2000;
 
 	onMount( async() => {
@@ -98,7 +100,7 @@
 
 	//connect to socket.io server
 	if(!socket){
-	    socket = io(':3001')
+	    socket = io('https://chatsecuresocket.herokuapp.com/')
 
 	    //listen for notification message
 	    socket.on('botMessage', status => {
@@ -253,7 +255,9 @@
 	}
 
 	function sendMessage(){
-		messages = [...messages, {way: 'out', msg: chatmessage, file, fileData, time: getTime()}];
+		if(!file){
+			messages = [...messages, {way: 'out', msg: chatmessage, file, fileData, time: getTime()}];
+		}
 		let data = JSON.stringify({way: 'in', msg: chatmessage, file, fileData, time: getTime()});
 		let box;
 		if(joinedSession){
@@ -271,6 +275,13 @@
 		}
 		box = naclUtil.encodeBase64(box);
 		socket.emit('message', box);
+		if(file){
+			sendingMessage = true;
+			setTimeout(()=>{				
+				sendingMessage = false;
+				messages = [...messages, {way: 'out', msg: chatmessage, file, fileData, time: getTime()}];
+			}, 3800)
+		}
 		chatmessage = '';
 		file = false;
 		fileData = null;
@@ -553,13 +564,18 @@
 						{/if}
 						<input class="messageBox" bind:value={chatmessage} maxlength="1024" minlength="1" placeholder="type your message here" bind:this={inputRef}  on:keydown={checkEnterPress} disabled={!isChatLocked || file} class:fileUploaded={file} />
 					</div>
-					<button on:click={sendMessage} disabled={!chatmessage.length || chatmessage === "/"}><img src="send.png" alt="send icon" class="sendIcon">
-						<span class="sendText">Send</span>
+					<button on:click={sendMessage} disabled={!chatmessage.length || chatmessage === "/" || sendingMessage}>
+						{#if sendingMessage}
+							<img src="loader.gif" alt="loading gif" class="loaderAnim" style="height: 1.6rem">
+						{:else}
+							<img src="send.png" alt="send icon" class="sendIcon">
+							<span class="sendText">Send</span>
+						{/if}
 					</button>
 				</div>
 				{#if fileLargeError}	
 					<p transition:slide class="fileLargeError">
-						Please upload a file less than 1mb
+						Please upload a file less than {MAX_FILE_SIZE/1000}kb
 					</p>
 				{/if}
 				{#if !chatOptions}
