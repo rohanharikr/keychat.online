@@ -27,11 +27,11 @@
 
 ## **Built with**
 
-- [Svelte Sapper](https://developer.mozilla.org/en-US/docs/Web/HTML)
-- [Node](https://developer.mozilla.org/en-US/docs/Web/HTML)
-- [Express](https://developer.mozilla.org/en-US/docs/Web/HTML)
-- [Sockets.io](https://developer.mozilla.org/en-US/docs/Web/HTML)
-- [TweetNacl](https://developer.mozilla.org/en-US/docs/Web/HTML)
+- [Svelte](https://svelte.dev/)
+- [Node](https://nodejs.org/en/)
+- [Express](https://expressjs.com/)
+- [Sockets.io](https://socket.io/)
+- [TweetNacl](https://socket.io/)
 
 
 #### Local development environment
