@@ -1,6 +1,6 @@
 const app = require('express')();
-const http = require('http').createServer(app);
-const io = require('socket.io')(http);
+const server = app.listen(3001);
+const io = require('socket.io').listen(server);
 
 let userName, userAvatar, anonName, anonAvatar, userPublicKey, anonPublicKey, nonce;
 
@@ -68,10 +68,4 @@ io.on('connection', socket => {
             .emit(
                 'botMessage', USER_LEFT);
     });
-});
-
-const port = process.env.PORT || 3001;
-
-http.listen(port, () => {
-    console.log(`listening on ${port}`);
 });

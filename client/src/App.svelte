@@ -114,7 +114,8 @@
 
 	//connect to socket.io server
 	if(!socket){
-	    socket = io(':3001')
+	    // socket = io.connect('http://yourdomain/', {path: '/ws/'})
+	    socket = io.connect(':3001')
 
 	    //listen for notification message
 	    socket.on('botMessage', status => {

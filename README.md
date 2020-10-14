@@ -30,7 +30,7 @@
 - [Svelte](https://svelte.dev/)
 - [Node](https://nodejs.org/en/)
 - [Express](https://expressjs.com/)
-- [Sockets.io](https://socket.io/)
+- [Socket.io](https://socket.io/)
 - [TweetNacl](https://socket.io/)
 
 
