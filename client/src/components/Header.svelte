@@ -1,5 +1,5 @@
 <script>
-	export let src = "chatsecureoffline.svg";
+	export let src = "assets/chatsecureoffline.svg";
 </script>
 
 <header>

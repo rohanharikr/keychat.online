@@ -10,7 +10,7 @@
 </div>
 <br>
 <div align="center">
-  <a href="https://keychat.online"><img src="client/public/screenshot.png" alt="screenshot" width="100%"></a>
+  <a href="https://keychat.online"><img src="client/public/assets/screenshot.png" alt="screenshot" width="100%"></a>
 </div>
 <br>
 

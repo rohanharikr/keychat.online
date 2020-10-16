@@ -18,9 +18,10 @@
 
 </script>
 
+
 <footer class="footer">
     <div class="footerContainer">
-        <img src="chatsecureonline.svg" alt="logo" class="logo">
+        <img src="assets/chatsecureonline.svg" alt="logo" class="logo">
         <ul>
             <li>&#169; 2020 MIT License</li>
             <li><a href="https://www.twitter.com/rohanharikr">made by rohanharikr</a></li>
@@ -29,11 +30,14 @@
             <!-- <li>commit {id || '...'}</li> -->
             <li class="link" style="margin-bottom: 0.2rem;">
                 <a href="https://github.com/rohanharikr/keychat.online">
-                    <img src="github.svg" alt="github logo" class="footericon">
+                    <img src="assets/github.svg" alt="github logo" class="footericon">
                 </a>
             </li>
+            <li class="ph">
+                <a href="https://www.producthunt.com/posts/keychat?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-keychat" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=269286&theme=dark" alt="Keychat - Start a free secure chat with anyone without signing up | Product Hunt" style="height: 2.4rem;"/></a>
+            </li>
         </ul>
-        <img src="chatsecureonline.svg" alt="logo" class="mobileLogo">
+        <img src="assets/chatsecureonline.svg" alt="logo" class="mobileLogo">
     </div>
 </footer>
 
@@ -71,12 +75,12 @@
     }
 
     ul{
-        columns: 3;
+        columns: 4;
         font-weight: 400;
         font-size: 0.8rem;
-        margin-left: 12rem;
-        column-gap: 6rem;
+        margin-left: 4rem;
         opacity: 0.8;
+        column-gap: 2.2rem;
     }
 
     ul li{
@@ -93,7 +97,7 @@
         display: none;
     }
 
-    @media only screen and (max-width: 768px) {
+    @media only screen and (max-width: 1024px) {
         footer{
             margin-top: 2rem;
             height: auto;
@@ -130,6 +134,9 @@
             filter: grayscale(100%);
             opacity: 0.8;
             margin-top: -4.4em;
+        }
+        .ph{
+            margin-top: 1.2rem;
         }
     }
 </style>

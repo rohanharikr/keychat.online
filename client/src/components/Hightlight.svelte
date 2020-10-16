@@ -2,15 +2,15 @@
 	<div class="container">
 		<h1>We don’t store any chat histories. Ever.</h1>
 		<div class="sessionDeleted flex">
-			<img src="session-deleted.svg" alt="session deleted">
+			<img src="assets/session-deleted.svg" alt="session deleted">
 			<p style="margin-right: 2rem;">Since there is no persistent data, sessions are deleted after both the parties exist the room</p>
 		</div>
 		<div class="noInterruptions flex">
 			<p style="margin-left: 2rem;">Messages are encrypted using asymmetric keys; tamper/intercept proof and session is locked once two people join a room</p>
-			<img src="nointerruptions.svg" alt="no interruptions">
+			<img src="assets/nointerruptions.svg" alt="no interruptions">
 		</div>
 		<div class="sessionDeleted flex modifier">
-			<img src="opensource.svg" alt="session deleted">
+			<img src="assets/opensource.svg" alt="session deleted">
 			<p style="width: 14rem; margin-bottom: 0; margin-right: 2rem;">Source code is open under the MIT license</p>
 		</div>
 	</div>
