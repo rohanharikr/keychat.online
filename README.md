@@ -1,7 +1,7 @@
 <div align="center">
   <h5>When I wrote this, only God and I understood what I was doing. Now, only God knows.</h5>
   <br>
-  <a href="https://keychat.online"><img src="client/public/logo-512.png" alt="keychat.online logo" height="128"></a>
+  <a href="https://keychat.online"><img src="client/public/assets/logo-512.png" alt="keychat.online logo" height="128"></a>
   <br><br>
   <p>
     <b>keychat.online</b>
