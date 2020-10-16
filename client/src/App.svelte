@@ -550,7 +550,7 @@
 							<div class="timeStamp timeStampAnon" in:fly="{{y: 10, duration: 300}}">{time}</div>
 						{/if}
 					{/each}
-					{#if isTyping}
+					{#if !isTyping}
 						<div class="chatBubbleContainer" in:fly="{{y: 10, duration: 300}}" out:fly="{{y: 10, duration: 100}}">
 								{#if !joinedSession}
 									<div class="avatar avatarAnon tooltip-bottom-left" style="background-image: url({anonAvatar}); font-size: 0.8rem;" data-tooltip={anonName}></div>
@@ -654,7 +654,7 @@
 	.typingAnimContainer{
 		padding: 0 !important;
 		height: 2.2rem !important;
-		width: 3.8rem !important;
+		width: 3.4rem !important;
 		display: flex !important;
 		justify-content: center !important;
 		align-items: center !important;
@@ -894,7 +894,7 @@
 		font-weight: 300;
 		font-size: 1rem;
 		background: #242424;
-		padding: 0.6rem 1rem;
+		padding: 0.6rem 0.8rem;
 		border-radius: 0.2rem;
 		cursor: pointer;
 		display: flex;
@@ -902,8 +902,13 @@
 		margin-right: 0.8rem;
 	}
 
+	.chatOptions li div{
+		padding-top: 0.2rem;
+	}
+
 	.chatOptions img{
-		height: 1.26rem;
+		height: 1rem;
+		margin-right: 0.4rem
 	}
 
 	.fileLargeError{

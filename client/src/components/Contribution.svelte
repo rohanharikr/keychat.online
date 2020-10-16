@@ -10,7 +10,7 @@
 	</div>
 	{#if expand}
 		<div transition:slide style="margin-top: 1rem;">
-			<h4>How your contribution will be used?</h4>
+			<h4>How your contribution is used?</h4>
 			<p>
 				Your generous contribution will easily cover the server, 
 				domain renewal costs and help keep this product free for everyone.
