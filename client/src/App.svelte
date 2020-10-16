@@ -7,6 +7,7 @@
 	import { featuresData, working } from './landingPageData.js';
 	import io from 'socket.io-client';
 	import secretKeyGenerator from './utils/secretKeyGenerator';
+	import sleep from './utils/sleep';
 	import { slide } from 'svelte/transition';
 	import { fade, fly } from 'svelte/transition';
 	import { scale } from 'svelte/transition';
@@ -23,7 +24,7 @@
 	import { onMount } from 'svelte';
     import Analytics from 'analytics'
     import googleAnalytics from '@analytics/google-analytics'
- 
+  
     const analytics = Analytics({
       app: 'chatsecure-online',
       plugins: [
@@ -194,10 +195,14 @@
 		nonce = naclUtil.encodeBase64(nacl.randomBytes(24));
 
 		secretKey = secretKeyGenerator();
-		userName = user.getAvatarName(),
-	 	userAvatar = user.getAvatarUrl(),
-		anonName = anon.getAvatarName(),
-	 	anonAvatar = anon.getAvatarUrl(),
+		userName = user.getAvatarName();
+		anonName = anon.getAvatarName();
+		let userNameSeed = userName.replace(/ /g, '');
+		let anonNameSeed = anonName.replace(/ /g, '');
+		// ?options[colorful]=1%options[w]=250
+	 	userAvatar = `https://avatars.dicebear.com/api/gridy/${userNameSeed}.svg?options[r]=50`;
+	 	anonAvatar = `https://avatars.dicebear.com/api/gridy/${anonNameSeed}.svg?options[r]=50`;
+	 	console.log(userAvatar);
 		socket.emit('newRoom', {secretKey, userName, userAvatar, anonName, anonAvatar, userPublicKey, nonce});
 		isLoadingStart = true;
 		setTimeout(() => {
@@ -269,7 +274,7 @@
 		socket.emit('disconnecting')
 	}
 
-	function sendMessage(){
+	async function sendMessage(){
 		if(!file){
 			messages = [...messages, {way: 'out', msg: chatmessage, file, fileData, time: getTime()}];
 		}
@@ -291,11 +296,10 @@
 		box = naclUtil.encodeBase64(box);
 		socket.emit('message', box);
 		if(file){
-			sendingMessage = true;
-			setTimeout(()=>{				
-				sendingMessage = false;
-				messages = [...messages, {way: 'out', msg: chatmessage, file, fileData, time: getTime()}];
-			}, 3800)
+			sendingMessage = true;						
+			await sleep(3.8);
+			sendingMessage = false;
+			messages = [...messages, {way: 'out', msg: chatmessage, file, fileData, time: getTime()}];
 		}
 		chatmessage = '';
 		file = false;
@@ -581,7 +585,7 @@
 					</div>
 					<button on:click={sendMessage} disabled={!chatmessage.length || chatmessage === "/" || sendingMessage}>
 						{#if sendingMessage}
-							<img src="loader.gif" alt="loading gif" class="loaderAnim" style="height: 1.6rem">
+							<img src="loader.gif" alt="loading gif" class="loaderAnim" style="height: 1.8rem">
 						{:else}
 							<img src="send.png" alt="send icon" class="sendIcon">
 							<span class="sendText">Send</span>
@@ -866,6 +870,8 @@
 		border-radius: 50%;
 		background: var(--green);
 		margin-right: 0.4rem;
+		/*font correction*/
+		margin-bottom: 0.1rem;
 	}
 
 	.chatOptions{
