@@ -169,7 +169,7 @@
 		messages = [...messages, utf8];
     	updateScroll();
     	if(!tabActive){
-    		notificationSound("./sounds/message.mp3");
+    		notificationSound("./assets/sounds/message.mp3");
     	}
     });
 
