@@ -65,7 +65,7 @@
 
     .logo{
         filter: grayscale(100%);
-        height: 2rem;
+        height: 1.8rem;
         opacity: 0.8;
     }
 
@@ -84,9 +84,9 @@
     }
 
     ul li{
-        margin-bottom: 0.4rem;
+        /*margin-bottom: 0.4rem;*/
         cursor: pointer;
-        transition: 0.3s;
+        /*transition: 0.3s;*/
     }
 
     li:hover{

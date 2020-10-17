@@ -203,7 +203,6 @@
 		// ?options[colorful]=1%options[w]=250
 	 	userAvatar = `https://avatars.dicebear.com/api/gridy/${userNameSeed}.svg?options[r]=50`;
 	 	anonAvatar = `https://avatars.dicebear.com/api/gridy/${anonNameSeed}.svg?options[r]=50`;
-	 	console.log(userAvatar);
 		socket.emit('newRoom', {secretKey, userName, userAvatar, anonName, anonAvatar, userPublicKey, nonce});
 		isLoadingStart = true;
 		setTimeout(() => {
