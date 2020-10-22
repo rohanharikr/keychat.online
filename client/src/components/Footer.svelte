@@ -33,9 +33,9 @@
                     <img src="assets/github.svg" alt="github logo" class="footericon">
                 </a>
             </li>
-            <li class="ph">
+<!--             <li class="ph">
                 <a href="https://www.producthunt.com/posts/keychat?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-keychat" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=269286&theme=dark" alt="Keychat - Start a free secure chat with anyone without signing up | Product Hunt" style="height: 2.4rem;"/></a>
-            </li>
+            </li> -->
         </ul>
         <img src="assets/chatsecureonline.svg" alt="logo" class="mobileLogo">
     </div>
@@ -67,6 +67,7 @@
         filter: grayscale(100%);
         height: 1.8rem;
         opacity: 0.8;
+        margin-right: 1rem;
     }
 
     .link{
@@ -75,12 +76,12 @@
     }
 
     ul{
-        columns: 4;
+        columns: 3;
         font-weight: 400;
         font-size: 0.8rem;
-        margin-left: 4rem;
+        margin-left: 12.6rem;
         opacity: 0.8;
-        column-gap: 2.2rem;
+        column-gap: 6rem;
     }
 
     ul li{
