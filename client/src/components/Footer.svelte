@@ -2,14 +2,15 @@
   import { onMount } from 'svelte'
   import countapi from 'countapi-js'
 
-  let hits, id
+  let hits
+  // Let id;
 
   onMount(async () => {
     await countapi.visits('global').then((result) => {
-      hits = result.value + 2170 // migrated 2170 count form chatsecure.online
+      hits = result.value + 2170 // Migrated 2170 count form chatsecure.online
     })
 
-    // await fetch('https://api.github.com/repos/rohanharikr/keychat.online/commits')
+    // Await fetch('https://api.github.com/repos/rohanharikr/keychat.online/commits')
     //     .then((response) => response.json())
     //     .then((data) => {
     //     id = data[0].sha.slice(0, 7)
@@ -111,9 +112,6 @@
       filter: grayscale(100%);
       opacity: 0.8;
       margin-top: -4.4em;
-    }
-    .ph {
-      margin-top: 1.2rem;
     }
   }
 </style>

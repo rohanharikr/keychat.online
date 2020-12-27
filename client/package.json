@@ -16,7 +16,11 @@
     "animal-avatars.js": "0.0.2",
     "copy-to-clipboard": "^3.3.1",
     "countapi-js": "^1.0.1",
+    "eslint": "^7.16.0",
+    "eslint-plugin-svelte3": "^3.0.0",
     "file-saver": "^2.0.2",
+    "prettier": "^2.2.1",
+    "prettier-plugin-svelte": "^1.4.2",
     "rollup": "^2.3.4",
     "rollup-plugin-livereload": "^2.0.0",
     "rollup-plugin-svelte": "^6.0.0",
@@ -25,11 +29,7 @@
     "svelte": "^3.0.0",
     "svelte-internet-connection": "^0.1.2",
     "tweetnacl": "^1.0.3",
-    "tweetnacl-util": "^0.15.1",
-    "eslint": "^7.16.0",
-    "eslint-plugin-svelte3": "^3.0.0",
-    "prettier": "^2.2.1",
-    "prettier-plugin-svelte": "^1.4.2"
+    "tweetnacl-util": "^0.15.1"
   },
   "dependencies": {
     "sirv-cli": "^1.0.0"

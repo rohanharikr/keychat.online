@@ -43,7 +43,7 @@ fs.writeFileSync(
   JSON.stringify(packageJSON, null, '  ')
 )
 
-// mv src/main.js to main.ts - note, we need to edit rollup.config.js for this too
+// Mv src/main.js to main.ts - note, we need to edit rollup.config.js for this too
 const beforeMainJSPath = path.join(projectRoot, 'src', 'main.js')
 const afterMainTSPath = path.join(projectRoot, 'src', 'main.ts')
 fs.renameSync(beforeMainJSPath, afterMainTSPath)

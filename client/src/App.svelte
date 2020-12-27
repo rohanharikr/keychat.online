@@ -11,13 +11,11 @@
   import sleep from './utils/sleep'
   import { slide } from 'svelte/transition'
   import { fade, fly } from 'svelte/transition'
-  import { scale } from 'svelte/transition'
-  import { quintOut } from 'svelte/easing'
   import copy from 'copy-to-clipboard'
   import AnimalAvatar from 'animal-avatars.js'
   import getTime from './utils/getTime'
   import notificationSound from './utils/notificationSound'
-  import checkDevice from './utils/device'
+  // Import checkDevice from './utils/device'
   import FileSaver from 'file-saver'
   import InternetConnection from 'svelte-internet-connection'
   import nacl from 'tweetnacl'
@@ -61,7 +59,7 @@
     network = true,
     tabActive = true,
     chatArea,
-    appleShare = false,
+    // AppleShare = false,
     shareOptions = false,
     chatOptions = false,
     file = false,
@@ -74,9 +72,9 @@
 
   let userPublicKey, userPrivateKey, anonPublicKey, anonPrivateKey, nonce
 
-  let whatsappLink, telegramLink, imessageLink, messengerLink, emailLink
+  let whatsappLink, telegramLink, emailLink
 
-  const MAX_FILE_SIZE = 200000 //200kb
+  const MAX_FILE_SIZE = 200000 // 200kb
 
   const NOTIFICATION_VISIBLE_TIME = 2000
 
@@ -93,7 +91,7 @@
     }
 
     if (param) window.history.replaceState({}, document.title, '/')
-    //need to figure out how to send links in imessages and facebook
+    // Need to figure out how to send links in imessages and facebook
 
     // const appleDevice = checkDevice();
 
@@ -103,15 +101,15 @@
     // }
   })
 
-  //connect to socket.io server
+  // Connect to socket.io server
   if (!socket) {
-    // socket = io.connect('http://yourdomain/', {path: '/ws/'})
+    // Socket = io.connect('http://yourdomain/', {path: '/ws/'})
     socket = io.connect(':3001')
 
-    //listen for notification message
+    // Listen for notification message
     socket.on('botMessage', (status) => {
       let botMessage
-      //status 1 = joined, 0 = disconnected
+      // Status 1 = joined, 0 = disconnected
       if (status === 1) {
         shareOptions = false
         botMessage = `${anonName} has joined the chat`
@@ -204,7 +202,7 @@
     setTimeout(() => {
       isLoadingStart = false
       isChatBox = true
-    }, 300) //ux
+    }, 300) // Ux
 
     shareOptions = true
     secretLink = `https://keychat.online/?sc=${secretKey || joinKey}`
@@ -226,7 +224,7 @@
       sessionInProgress = true
     })
 
-    // this is a bad way to write this, need to use promise
+    // This is a bad way to write this, need to use promise
     setTimeout(() => {
       if (!sessionInProgress) {
         isChatBox = true
@@ -372,9 +370,7 @@
   // }
 
   function checkEnterPress(event) {
-    let key
     let keyCode
-    key = event.key
     keyCode = event.keyCode
 
     if (
