@@ -1,0 +1,39 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaVersion": 2019,
+    "sourceType": "module"
+  },
+  "plugins": ["svelte3"],
+  "extends": ["eslint:recommended"],
+  "overrides": [
+    {
+      "files": ["**/*.svelte"], 
+      "processor": "svelte3/svelte3"
+    }
+  ],
+  "rules": {
+    "indent": ["error", 2],
+    "eol-last": ["error", "always"],
+    "spaced-comment": [
+      "error",
+      "always",
+      {
+        "line": {
+          "markers": ["/"],
+          "exceptions": ["-", "+"],
+        },
+        "block": {
+          "markers": ["!"],
+          "exceptions": ["*"],
+          "balanced": true,
+        },
+      },
+    ],
+    "capitalized-comments": ["error", "always", { "ignoreConsecutiveComments": true }],
+  },
+}

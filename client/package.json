@@ -4,7 +4,9 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "start": "sirv public"
+    "start": "sirv public",
+    "format": "npx prettier --write \"{,!(node_modules|public)/**/}*.{js,svelte}\"",
+    "lint": "npx eslint --fix \"{,!(node_modules|public)/**/}*.{js,svelte}\""
   },
   "devDependencies": {
     "@analytics/google-analytics": "^0.5.2",
@@ -23,7 +25,11 @@
     "svelte": "^3.0.0",
     "svelte-internet-connection": "^0.1.2",
     "tweetnacl": "^1.0.3",
-    "tweetnacl-util": "^0.15.1"
+    "tweetnacl-util": "^0.15.1",
+    "eslint": "^7.16.0",
+    "eslint-plugin-svelte3": "^3.0.0",
+    "prettier": "^2.2.1",
+    "prettier-plugin-svelte": "^1.4.2"
   },
   "dependencies": {
     "sirv-cli": "^1.0.0"
