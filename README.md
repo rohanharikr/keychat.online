@@ -20,6 +20,14 @@
 
 **Save:** Option to save chat history
 
+
+## **Installation**
+
+1. `npm i concurrently -g` 
+2. in client folder, `npm i`
+3. in root folder, `npm i` 
+4. in root folder, `npm run dev`
+
 ## **Demo**
 
 [https://keychat.online](https://keychat.online)
