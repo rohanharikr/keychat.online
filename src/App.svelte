@@ -98,12 +98,12 @@
                 >
               </div>
             {:else}
-              <div class="flex flex-row-reverse items-start ml-auto">
+              <div class="flex items-start">
                 <span class="flex-shrink-0 w-10 h-10 bg-yellow-100 rounded-full">
                   <img src="https://avatars.dicebear.com/api/croodles-neutral/test.svg" />
                 </span>
                 <span
-                  class="inline-flex word-wrap items-center px-4 py-2 rounded-l-2xl rounded-t-2xl bg-[#6875f5] mr-2"
+                  class="inline-flex word-wrap items-center px-4 py-2 rounded-r-2xl rounded-t-2xl bg-[#6875f5] ml-2"
                   >{message}</span
                 >
               </div>
