@@ -1,66 +1,48 @@
-<div align="center">
-  <h5>When I wrote this, only God and I understood what I was doing. Now, only God knows.</h5>
-  <br>
-  <a href="https://keychat.online"><img src="client/public/assets/logo-512.png" alt="keychat.online logo" height="128"></a>
-  <br><br>
-  <p>
-    <b>keychat.online</b>
-    <p>Start a free secure and private chat with anyone without logging in or signing up
-  </p>
-</div>
-<br>
-<div align="center">
-  <a href="https://keychat.online"><img src="client/public/assets/screenshot.png" alt="screenshot" width="100%"></a>
-</div>
-<br>
+# Svelte + Vite
 
-**Public key encrypted:** Messages are encrypted using elliptic curve Diffie-Hellman key exchange; not connected to a database
+This template should help get you started developing with Svelte in Vite.
 
-**No login or signup:** Easy as sharing a secret code with someone or starting a new session
+## Recommended IDE Setup
 
-**Save:** Option to save chat history
+[VSCode](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
 
+## Need an official Svelte framework?
 
-## **Installation**
+Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
 
-1. `npm i concurrently -g` 
-2. in client folder, `npm i`
-3. in root folder, `npm i` 
-4. in root folder, `npm run dev`
+## Technical considerations
 
-## **Demo**
+**Why use this over SvelteKit?**
 
-[https://keychat.online](https://keychat.online)
+- It brings its own routing solution which might not be preferable for some users.
+- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
+  `vite dev` and `vite build` wouldn't work in a SvelteKit environment, for example.
 
+This template contains as little as possible to get started with Vite + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
 
-## **Built with**
+Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
 
-- [Svelte](https://svelte.dev/)
-- [Node](https://nodejs.org/en/)
-- [Express](https://expressjs.com/)
-- [Socket.io](https://socket.io/)
-- [TweetNacl](https://socket.io/)
+**Why `global.d.ts` instead of `compilerOptions.types` inside `jsconfig.json` or `tsconfig.json`?**
 
+Setting `compilerOptions.types` shuts out all other types not explicitly listed in the configuration. Using triple-slash references keeps the default TypeScript setting of accepting type information from the entire workspace, while also adding `svelte` and `vite/client` type information.
 
-#### Local development environment
+**Why include `.vscode/extensions.json`?**
 
-1. [Clone this repo](https://help.github.com/en/articles/cloning-a-repository) with git.
-2. Install dependencies by running `npm install` within the directory that you cloned (`root and client`).
-3. Start the development server with `npm run dev`.
-4. Open development site by going to [`http://localhost:3000`](http://localhost:3000) in your browser.
+Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
 
+**Why enable `checkJs` in the JS template?**
 
-## **Contributing**
+It is likely that most cases of changing variable types in runtime are likely to be accidental, rather than deliberate. This provides advanced typechecking out of the box. Should you like to take advantage of the dynamically-typed nature of JavaScript, it is trivial to change the configuration.
 
-Please contribute using [GitHub Flow](https://guides.github.com/introduction/flow). Create a branch, add commits, and [open a pull request](https://github.com/hoppscotch/hoppscotch/compare).
+**Why is HMR not preserving my local component state?**
 
-Please read [`CONTRIBUTING`](CONTRIBUTING.md) for details on our [`CODE OF CONDUCT`](CODE_OF_CONDUCT.md), and the process for submitting pull requests to us.
+HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/rixo/svelte-hmr#svelte-hmr).
 
-## **License**
+If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
 
-This project is licensed under the [MIT License](https://opensource.org/licenses/MIT) - see the [`LICENSE`](LICENSE) file for details.
-
-## **Acknowledgements**
-
-- Illustrations from growwwkit
-- [Anto Jose](https://github.com/antojose), [Santosh Raju](https://github.com/fraggerfox), [Rahul Harikumar](https://github.com/antojose), [Unnikrishnan B](https://github.com/UnnikrishnanBhargavakurup)
+```js
+// store.js
+// An extremely simple external store
+import { writable } from 'svelte/store'
+export default writable(0)
+```
