@@ -5,7 +5,7 @@
 
 <Layout>
   <section
-    class="mt-10 space-y-4 w-full flex flex-col items-center {isActive
+    class="mt-4 md:mt-10 space-y-4 w-full flex flex-col items-center {isActive
       ? 'px-6 py-4 flex-1 bg-[#171b22] border border-[#30363d] rounded-md'
       : ''}"
   >
