@@ -1,15 +1,45 @@
 <script>
-  import Layout from './lib/Layout.svelte';
-  let isActive = false;
+  import { onMount } from "svelte";
+  import { isActive } from './stores';
+  import io from "socket.io-client";
+  import { nanoid } from 'nanoid';
+  import Layout from "./lib/Layout.svelte";
+  
+  let socket;
+  let messages = [];
+  let data = {};
+
+  function startSession(){
+    socket = io(":3001");
+
+    socket.on('init', (message) => {
+      data.userId = message.user_id;
+      data.roomKey = message.room_key;
+    })
+
+    $isActive = true;
+  }
+
+  function sendMessage(e){
+    const formData = new FormData(e.target);
+    socket.emit('message', formData.get('message'));
+    e.target.reset();
+  }
+
+  $: if(socket){
+    socket.on('messages', data => {
+      messages = data;
+    })
+  }
 </script>
 
 <Layout>
   <section
-    class="mt-4 md:mt-10 space-y-4 w-full flex flex-col items-center {isActive
+    class="mt-4 md:mt-10 space-y-4 w-full flex flex-col items-center {$isActive
       ? 'px-6 py-4 flex-1 bg-[#171b22] border border-[#30363d] rounded-md'
       : ''}"
   >
-    {#if !isActive}
+    {#if !$isActive && !Object.keys(data).length}
       <form class="w-full rounded-md p-4 bg-[#171b22] border border-[#30363d]">
         <input
           type="text"
@@ -22,7 +52,7 @@
       </form>
       <span class="text-[#8b949e] text-sm">or</span>
       <button
-        on:click={() => (isActive = true)}
+        on:click={startSession}
         class="rounded-md h-12 flex items-center justify-center w-full bg-[#6875f5]"
         >Start a new chat</button
       >
@@ -32,7 +62,7 @@
           <div
             class="border border-[#30363d] rounded-md h-full inline-flex items-center justify-center px-4"
           >
-            <span>72826</span>
+            <span>{data.roomKey}</span>
             <button>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -56,27 +86,32 @@
           </div>
         </header>
         <main class="flex-1 w-full bg-[#0d1117] p-4 space-y-4">
-          <div class="inline-flex items-center">
-            <span class="w-10 h-10 bg-yellow-100 rounded-full">
-              <img src="https://avatars.dicebear.com/api/croodles-neutral/test.svg" />
-            </span>
-            <span
-              class="inline-flex items-center px-4 h-10 rounded-r-full rounded-t-full bg-[#171b22] ml-2"
-              >hey, whats up?</span
-            >
-          </div>
-          <div class="flex flex-row-reverse items-center ml-auto">
-            <span class="w-10 h-10 bg-yellow-100 rounded-full">
-              <img src="https://avatars.dicebear.com/api/croodles-neutral/test.svg" />
-            </span>
-            <span
-              class="inline-flex items-center px-4 h-10 rounded-l-full rounded-t-full bg-[#6875f5] mr-2"
-              >hey, whats up?</span
-            >
-          </div>
+          {#each messages as {id, message}}
+            {#if id === data.userId}
+              <div class="flex flex-row-reverse items-start ml-auto">
+                <span class="flex-shrink-0 w-10 h-10 bg-yellow-100 rounded-full">
+                  <img src="https://avatars.dicebear.com/api/croodles-neutral/test.svg" />
+                </span>
+                <span
+                  class="inline-flex word-wrap items-center px-4 py-2 rounded-l-2xl rounded-t-2xl bg-[#6875f5] mr-2"
+                  >{message}</span
+                >
+              </div>
+            {:else}
+              <div class="flex flex-row-reverse items-start ml-auto">
+                <span class="flex-shrink-0 w-10 h-10 bg-yellow-100 rounded-full">
+                  <img src="https://avatars.dicebear.com/api/croodles-neutral/test.svg" />
+                </span>
+                <span
+                  class="inline-flex word-wrap items-center px-4 py-2 rounded-l-2xl rounded-t-2xl bg-[#6875f5] mr-2"
+                  >{message}</span
+                >
+              </div>
+            {/if}
+          {/each}
         </main>
         <footer class="w-full">
-          <form class="flex h-12">
+          <form class="flex h-12" on:submit|preventDefault={sendMessage}>
             <input
               type="text"
               name="message"
@@ -109,7 +144,7 @@
     {/if}
   </section>
 
-  {#if isActive}
+  {#if $isActive}
     <p class="text-xs mt-4 text-center">Please do not share personal information without anyone.</p>
   {/if}
 </Layout>
